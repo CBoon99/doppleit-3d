@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Doppleit 3D – Create, animate, and export in an immersive web-based 3D environment.">
-    <meta name="keywords" content="3D, WebGL, Three.js, animation, design, modeling, Doppleit">
-    <title>Doppleit 3D</title>
-    <link rel="icon" type="image/png" href="/Assets/doppleit-3d-logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Doppleit 3D Pro</title>
     <style>
         * {
             margin: 0;
@@ -23,7 +19,6 @@
             display: flex;
             flex-direction: column;
             gap: 24px;
-            transition: background 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
         }
         body.dark {
@@ -102,46 +97,10 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: background 0.3s ease;
         }
         body.dark aside {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        aside h2 {
-            font-size: 1.35rem;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        aside ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        aside li {
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        aside li:hover {
-            background: rgba(160, 132, 202, 0.3);
-        }
-        body.dark aside li:hover {
-            background: rgba(138, 108, 180, 0.3);
-        }
-        aside li.selected {
-            background: rgba(160, 132, 202, 0.5);
-        }
-        body.dark aside li.selected {
-            background: rgba(138, 108, 180, 0.5);
-        }
-        aside li input {
-            background: transparent;
-            border: none;
-            color: inherit;
-            font-size: 0.9rem;
-            width: 100%;
         }
         .section {
             background: rgba(255, 255, 255, 0.15);
@@ -150,16 +109,6 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: background 0.3s ease;
-        }
-        body.dark .section {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .section h2 {
-            font-size: 1.35rem;
-            margin-bottom: 12px;
-            font-weight: 500;
         }
         .controls {
             display: flex;
@@ -178,10 +127,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(107, 115, 255, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 40px;
         }
         body.dark button,
         body.dark select,
@@ -191,34 +136,6 @@
             background: linear-gradient(135deg, #8A6CB4, #5A6373);
             box-shadow: 0 4px 8px rgba(107, 115, 255, 0.2);
         }
-        button:hover, select:hover, input[type="color"]:hover {
-            background: linear-gradient(135deg, #B294DA, #7B829E);
-            transform: scale(1.05);
-            filter: brightness(1.15);
-            transition: all 0.3s ease;
-        }
-        body.dark button:hover,
-        body.dark select:hover,
-        body.dark input[type="color"]:hover {
-            background: linear-gradient(135deg, #9A7CC4, #6A7383);
-            filter: brightness(1.05);
-            transition: all 0.3s ease;
-        }
-        button.active, button:active {
-            background: linear-gradient(135deg, #8A6CB4, #5A6373);
-            transform: scale(1);
-            transition: all 0.3s ease;
-        }
-        body.dark button.active,
-        body.dark button:active {
-            background: linear-gradient(135deg, #7A5CA4, #4A5363);
-            transition: all 0.3s ease;
-        }
-        button:disabled, select:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
         input[type="checkbox"] {
             display: none;
         }
@@ -227,27 +144,9 @@
         }
         input[type="checkbox"]:checked + label {
             background: linear-gradient(135deg, #8A6CB4, #5A6373);
-            transition: all 0.3s ease;
         }
         body.dark input[type="checkbox"]:checked + label {
             background: linear-gradient(135deg, #7A5CA4, #4A5363);
-            transition: all 0.3s ease;
-        }
-        input[type="number"] {
-            width: 70px;
-        }
-        input[type="color"] {
-            padding: 4px;
-            width: 50px;
-            height: 40px;
-        }
-        select {
-            background: linear-gradient(135deg, #A084CA, #6B728E);
-            transition: all 0.3s ease;
-        }
-        body.dark select {
-            background: linear-gradient(135deg, #8A6CB4, #5A6373);
-            transition: all 0.3s ease;
         }
         .canvas-container {
             flex: 1;
@@ -255,26 +154,14 @@
             border-radius: 8px;
             min-height: 400px;
             position: relative;
-            transition: background 0.3s ease;
         }
         body.dark .canvas-container {
             background: linear-gradient(135deg, rgba(138, 108, 180, 0.2), rgba(90, 99, 115, 0.3));
-            transition: background 0.3s ease;
         }
         canvas {
             width: 100%;
             height: 100%;
             border-radius: 8px;
-        }
-        #timeline-editor {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .keyframe-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
         }
         .keyframe-list {
             max-height: 150px;
@@ -282,11 +169,9 @@
             padding: 8px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            transition: background 0.3s ease;
         }
         body.dark .keyframe-list {
             background: rgba(255, 255, 255, 0.05);
-            transition: background 0.3s ease;
         }
         .keyframe-item {
             padding: 8px;
@@ -296,55 +181,79 @@
         }
         .keyframe-item:hover {
             background: rgba(160, 132, 202, 0.3);
-            transition: background 0.3s ease;
         }
         body.dark .keyframe-item:hover {
             background: rgba(138, 108, 180, 0.3);
-            transition: background 0.3s ease;
         }
         .keyframe-item.selected {
             background: rgba(160, 132, 202, 0.5);
-            transition: background 0.3s ease;
         }
         body.dark .keyframe-item.selected {
             background: rgba(138, 108, 180, 0.5);
-            transition: background 0.3s ease;
         }
-        .version-footer {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 12px;
-            transition: color 0.3s ease;
+        #performance-panel {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
         }
-        body.dark .version-footer {
-            color: #aaa;
-            transition: color 0.3s ease;
+        .gizmo-container {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            z-index: 100;
         }
-        #status-bar {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        #asset-library {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        .asset-thumb {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #eee;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        body.dark .asset-thumb {
+            background: #333;
+        }
+        #drop-zone {
+            border: 2px dashed #A084CA;
             border-radius: 8px;
-            padding: 10px 15px;
-            font-size: 0.9rem;
-            color: #1A1E2E;
+            padding: 20px;
             text-align: center;
-            transition: background 0.3s ease, color 0.3s ease;
+            margin-top: 10px;
+            transition: all 0.3s ease;
         }
-        body.dark #status-bar {
-            background: rgba(255, 255, 255, 0.1);
-            color: #E0E0E0;
-            transition: background 0.3s ease, color 0.3s ease;
+        body.dark #drop-zone {
+            border-color: #8A6CB4;
+        }
+        #drop-zone.active {
+            background: rgba(160, 132, 202, 0.2);
+        }
+        body.dark #drop-zone.active {
+            background: rgba(138, 108, 180, 0.2);
         }
     </style>
 </head>
 <body>
-    <div id="loading">Loading…</div>
+    <div id="loading">Loading...</div>
     <div id="error-message" aria-live="polite"></div>
     <div class="logo-container">
-        <h1>Doppleit 3D</h1>
-        <img id="logo" src="/Assets/doppleit-3d-logo.png" alt="Doppleit 3D Logo" onerror="this.style.display='none'; document.getElementById('error-message').textContent='Failed to load logo'; document.getElementById('error-message').classList.add('show');">
+        <h1>Doppleit 3D Pro</h1>
     </div>
 
     <main>
@@ -360,829 +269,1126 @@
             </div>
         </aside>
 
-        <div class="section" id="toolbar" role="toolbar">
+        <div class="section" id="toolbar">
             <h2>Toolbar</h2>
             <div class="controls">
-                <button id="doppleit-tool-select" class="active" title="Select 3D Object (Shift+Click to multi-select)" role="button">Select Object</button>
-                <button id="doppleit-tool-translate" title="Translate 3D Object (G)" role="button">Translate</button>
-                <button id="doppleit-tool-rotate" title="Rotate 3D Object (R)" role="button">Rotate Object</button>
-                <button id="doppleit-tool-scale" title="Scale 3D Object (S)" role="button">Scale Object</button>
-                <button id="doppleit-speed-fast" class="active" title="Fast Animation Speed" role="button">Fast</button>
-                <button id="doppleit-speed-final" title="Final Animation Speed" role="button">Final</button>
-                <select id="doppleit-theme" title="Select Theme" aria-label="Select Theme">
-                    <option value="default">Default</option>
-                    <option value="ocean">Ocean</option>
-                    <option value="sunset">Sunset</option>
-                </select>
-                <button id="doppleit-dark-mode" title="Toggle Dark Mode" role="button">Dark Mode: Off</button>
+                <button id="doppleit-tool-select" class="active">Select</button>
+                <button id="doppleit-tool-translate">Translate</button>
+                <button id="doppleit-tool-rotate">Rotate</button>
+                <button id="doppleit-tool-scale">Scale</button>
+                <button id="doppleit-physics-toggle">Physics: Off</button>
+                <button id="doppleit-snap-toggle">Snap: Off</button>
             </div>
         </div>
 
         <div class="section" id="prefab-library">
-            <h2>Prefabs</h2>
-            <div class="controls">
-                <button id="add-cube" title="Add Cube to Scene" role="button">Cube</button>
-                <button id="add-sphere" title="Add Sphere to Scene" role="button">Sphere</button>
-                <button id="add-cone" title="Add Cone to Scene" role="button">Cone</button>
-                <button id="add-torus" title="Add Torus to Scene" role="button">Torus</button>
-                <button id="add-plane" title="Add Plane to Scene" role="button">Plane</button>
+            <h2>Assets</h2>
+            <div id="drop-zone">Drop GLTF/GLB files here</div>
+            <div id="asset-library">
+                <div class="asset-thumb" data-geometry="box">Cube</div>
+                <div class="asset-thumb" data-geometry="sphere">Sphere</div>
+                <div class="asset-thumb" data-geometry="cone">Cone</div>
+                <div class="asset-thumb" data-geometry="torus">Torus</div>
+                <div class="asset-thumb" data-geometry="plane">Plane</div>
             </div>
         </div>
 
         <div class="section" id="scene">
             <h2>Scene</h2>
-            <div class="controls">
-                <button id="doppleit-reset-view" title="Reset Camera View" role="button">Reset View</button>
-                <button id="doppleit-clear-scene" title="Clear Scene" role="button">Clear Scene</button>
-                <input type="checkbox" id="doppleit-toggle-grid">
-                <label for="doppleit-toggle-grid" title="Toggle Grid Visibility" aria-label="Toggle Grid Visibility">Toggle Grid</label>
-                <input type="number" id="doppleit-duration" min="1" value="1" title="Animation Duration (seconds)" aria-label="Animation Duration">
-                <select id="doppleit-fps" title="Frames Per Second" aria-label="Frames Per Second">
-                    <option value="30">30 FPS</option>
-                    <option value="60">60 FPS</option>
-                    <option value="120">120 FPS</option>
-                </select>
-            </div>
-            <div class="canvas-container" role="application" aria-label="3D interactive canvas">
+            <div class="canvas-container">
                 <canvas id="doppleit-three-canvas"></canvas>
-            </div>
-        </div>
-
-        <div class="section" id="scene-settings">
-            <h2>Scene Settings</h2>
-            <div class="controls">
-                <input type="color" id="background-color" value="#000000" title="Set Background Color" aria-label="Set Background Color">
-                <input type="number" id="camera-target-x" value="0" step="0.1" title="Camera Target X" aria-label="Camera Target X">
-                <input type="number" id="camera-target-y" value="0" step="0.1" title="Camera Target Y" aria-label="Camera Target Y">
-                <input type="number" id="camera-target-z" value="0" step="0.1" title="Camera Target Z" aria-label="Camera Target Z">
-                <button id="reset-scene" title="Reset Scene to Default" role="button">Reset Scene</button>
-            </div>
-        </div>
-
-        <div class="section" id="material-editor">
-            <h2>Material Editor</h2>
-            <div class="controls">
-                <input type="color" id="material-color" value="#A084CA" title="Set Material Color" aria-label="Set Material Color">
-                <input type="checkbox" id="material-wireframe">
-                <label for="material-wireframe" title="Toggle Wireframe Mode" aria-label="Toggle Wireframe Mode">Wireframe</label>
-                <input type="number" id="material-opacity" min="0" max="1" step="0.1" value="1" title="Set Material Opacity" aria-label="Set Material Opacity">
-            </div>
-        </div>
-
-        <div class="section" id="lighting-controls">
-            <h2>Lighting</h2>
-            <div class="controls">
-                <h3>Ambient Light</h3>
-                <input type="color" id="ambient-color" value="#ffffff" title="Ambient Light Color" aria-label="Ambient Light Color">
-                <input type="number" id="ambient-intensity" min="0" max="1" step="0.1" value="0.5" title="Ambient Light Intensity" aria-label="Ambient Light Intensity">
-                <h3>Directional Light</h3>
-                <input type="color" id="directional-color" value="#ffffff" title="Directional Light Color" aria-label="Directional Light Color">
-                <input type="number" id="directional-intensity" min="0" max="1" step="0.1" value="0.5" title="Directional Light Intensity" aria-label="Directional Light Intensity">
-                <input type="number" id="directional-x" value="5" step="0.1" title="Directional Light X Position" aria-label="Directional Light X Position">
-                <input type="number" id="directional-y" value="5" step="0.1" title="Directional Light Y Position" aria-label="Directional Light Y Position">
-                <input type="number" id="directional-z" value="5" step="0.1" title="Directional Light Z Position" aria-label="Directional Light Z Position">
             </div>
         </div>
 
         <div class="section" id="timeline">
             <h2>Timeline</h2>
             <div class="controls">
-                <button id="doppleit-play-pause" title="Play/Pause Animation" role="button">Play</button>
-                <button id="doppleit-stop" title="Stop Animation" role="button">Stop</button>
+                <button id="doppleit-play-pause">Play</button>
+                <button id="doppleit-stop" disabled>Stop</button>
+                <button id="add-keyframe">Add Keyframe</button>
+                <input type="number" id="keyframe-time" min="0" step="0.1" value="0">
             </div>
-            <div id="timeline-editor">
-                <div class="keyframe-controls">
-                    <button id="add-keyframe" title="Add Keyframe for Selected Object" role="button">Add Keyframe</button>
-                    <input type="number" id="keyframe-time" min="0" step="0.1" value="0" title="Keyframe Time (seconds)" aria-label="Keyframe Time">
-                </div>
-                <div class="keyframe-list" id="keyframe-list"></div>
-            </div>
+            <div class="keyframe-list" id="keyframe-list"></div>
         </div>
-
-        <div class="section" id="state">
-            <h2>State</h2>
-            <div class="controls">
-                <button id="doppleit-save" title="Save Scene State" role="button">Save</button>
-                <button id="doppleit-load" title="Load Scene State" role="button">Load</button>
-                <button id="doppleit-import-json" title="Import Scene State via Drag & Drop" role="button">Import JSON</button>
-            </div>
-        </div>
-
-        <div class="section" id="export">
-            <h2>Export</h2>
-            <div class="controls">
-                <button id="doppleit-export-json" title="Export Scene as JSON" role="button">JSON</button>
-                <button id="doppleit-export-embed" title="Export Embeddable HTML" role="button">Embed</button>
-            </div>
-        </div>
-
-        <div id="status-bar">Mode: Select Object</div>
     </main>
 
-    <div class="version-footer">Doppleit 3D v1.0</div>
+    <div id="performance-panel">
+        FPS: <span id="fps-counter">0</span> | 
+        Objects: <span id="obj-counter">0</span> | 
+        Memory: <span id="mem-counter">0MB</span>
+    </div>
+
+    <div class="gizmo-container" id="transform-gizmo"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r165/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.165.0/examples/jsm/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three@0.165.0/examples/jsm/controls/TransformControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/controls/TransformControls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three-gizmo@2.1.0/dist/three-gizmo.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/loaders/GLTFLoader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/EffectComposer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/RenderPass.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/ShaderPass.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/shaders/CopyShader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/UnrealBloomPass.min.js"></script>
+
     <script>
-        const loading = document.getElementById('loading');
-        const errorMessage = document.getElementById('error-message');
-        const canvas = document.getElementById('doppleit-three-canvas');
-        const objectList = document.getElementById('object-list');
-        const inspectorContent = document.getElementById('inspector-content');
-        const statusBar = document.getElementById('status-bar');
-        const playPauseBtn = document.getElementById('doppleit-play-pause');
-        const keyframeList = document.getElementById('keyframe-list');
-        let scene, camera, renderer, orbitControls, transformControls, gridHelper, ambientLight, directionalLight;
-        let objects = [];
-        let selectedObject = null;
-        let currentMode = 'select';
-        let isDarkMode = false;
-        let animationSpeed = 'fast';
-        let isPlaying = false;
-        let keyframes = {};
-        let animationTime = 0;
-        let animationDuration = 1;
-        let fps = 60;
-
-        // Initialize Three.js Scene
-        function init() {
-            try {
-                scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-                renderer.setPixelRatio(window.devicePixelRatio);
-
-                camera.position.set(5, 5, 5);
-                camera.lookAt(0, 0, 0);
-
-                orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
-                orbitControls.enableDamping = true;
-                orbitControls.dampingFactor = 0.05;
-
-                transformControls = new THREE.TransformControls(camera, renderer.domElement);
-                transformControls.addEventListener('dragging-changed', (event) => {
-                    orbitControls.enabled = !event.value;
-                });
-                scene.add(transformControls);
-
-                gridHelper = new THREE.GridHelper(10, 10);
-                scene.add(gridHelper);
-
-                ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-                scene.add(ambientLight);
-
-                directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                directionalLight.position.set(5, 5, 5);
-                scene.add(directionalLight);
-
-                window.addEventListener('resize', () => {
-                    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-                });
-
-                loading.style.display = 'none';
-                animate();
-            } catch (err) {
-                showError(`Failed to initialize Three.js: ${err.message}`);
+    // ====================
+    // CORE CONFIGURATION
+    // ====================
+    const DoppleitConfig = {
+        snap: {
+            translate: 0.5,
+            rotate: 15,
+            scale: 0.1
+        },
+        physics: {
+            gravity: { x: 0, y: -9.82, z: 0 },
+            allowSleep: true
+        },
+        postProcessing: {
+            bloom: {
+                strength: 1.5,
+                radius: 0.5,
+                threshold: 0
             }
-        }
+        },
+        shadows: true
+    };
 
-        // Animation Loop
-        function animate() {
-            requestAnimationFrame(animate);
-            if (isPlaying) {
-                animationTime += 1 / fps;
-                if (animationTime > animationDuration) animationTime = 0;
-                updateAnimation();
-            }
-            orbitControls.update();
-            renderer.render(scene, camera);
-        }
-
-        // Add Object to Scene
-        function addObject(type) {
-            let geometry, material, mesh;
-            material = new THREE.MeshPhongMaterial({ color: 0xA084CA });
-            switch (type) {
-                case 'cube':
-                    geometry = new THREE.BoxGeometry();
-                    break;
-                case 'sphere':
-                    geometry = new THREE.SphereGeometry(0.5, 32, 32);
-                    break;
-                case 'cone':
-                    geometry = new THREE.ConeGeometry(0.5, 1, 32);
-                    break;
-                case 'torus':
-                    geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
-                    break;
-                case 'plane':
-                    geometry = new THREE.PlaneGeometry(1, 1);
-                    break;
-            }
-            mesh = new THREE.Mesh(geometry, material);
-            mesh.name = `${type}_${objects.length}`;
-            scene.add(mesh);
-            objects.push(mesh);
-            updateObjectList();
-            selectObject(mesh);
-        }
-
-        // Update Object List
-        function updateObjectList() {
-            objectList.innerHTML = '';
-            objects.forEach(obj => {
-                const li = document.createElement('li');
-                li.textContent = obj.name;
-                li.className = obj === selectedObject ? 'selected' : '';
-                li.addEventListener('click', () => selectObject(obj));
-                objectList.appendChild(li);
+    // ====================
+    // PLUGIN ARCHITECTURE
+    // ====================
+    const DoppleitAPI = {
+        plugins: new Map(),
+        
+        register: function(name, plugin) {
+            this.plugins.set(name, plugin);
+            if (plugin.init) plugin.init(this);
+            console.log(`Plugin registered: ${name}`);
+        },
+        
+        trigger: function(event, data) {
+            this.plugins.forEach(plugin => {
+                if (plugin.onEvent) plugin.onEvent(event, data);
             });
+        },
+        
+        getConfig: function() {
+            return DoppleitConfig;
         }
+    };
 
-        // Select Object
-        function selectObject(obj) {
-            selectedObject = obj;
-            updateObjectList();
-            transformControls.detach();
-            if (obj && currentMode !== 'select') {
-                transformControls.attach(obj);
-                transformControls.setMode(currentMode);
-            }
-            updateInspector();
-        }
+    // ====================
+    // CORE SYSTEM
+    // ====================
+    let scene, camera, renderer, orbitControls, transformControls;
+    let selectedObject = null;
+    let selectedObjects = new Set();
+    let transformGroup = null;
+    let isPlaying = false;
+    let keyframes = [];
+    let currentKeyframeTime = 0;
+    let timelineInterval;
+    let isDarkMode = false;
+    let objectMap = new Map();
+    let gridHelper, ambientLight, directionalLight;
+    let world, physicsEnabled = false;
+    let composer, bloomPass;
+    let snapEnabled = false;
+    let undoStack = [], redoStack = [];
+    let isUndoingRedoing = false;
 
-        // Update Inspector
-        function updateInspector() {
-            if (!selectedObject) {
-                inspectorContent.innerHTML = '<p>Select an object to edit its properties.</p>';
-                return;
-            }
-            inspectorContent.innerHTML = `
-                <div class="controls">
-                    <h3>${selectedObject.name}</h3>
-                    <label>Position X: <input type="number" id="pos-x" value="${selectedObject.position.x}" step="0.1"></label>
-                    <label>Position Y: <input type="number" id="pos-y" value="${selectedObject.position.y}" step="0.1"></label>
-                    <label>Position Z: <input type="number" id="pos-z" value="${selectedObject.position.z}" step="0.1"></label>
-                    <label>Rotation X: <input type="number" id="rot-x" value="${selectedObject.rotation.x}" step="0.1"></label>
-                    <label>Rotation Y: <input type="number" id="rot-y" value="${selectedObject.rotation.y}" step="0.1"></label>
-                    <label>Rotation Z: <input type="number" id="rot-z" value="${selectedObject.rotation.z}" step="0.1"></label>
-                    <label>Scale X: <input type="number" id="scale-x" value="${selectedObject.scale.x}" step="0.1"></label>
-                    <label>Scale Y: <input type="number" id="scale-y" value="${selectedObject.scale.y}" step="0.1"></label>
-                    <label>Scale Z: <input type="number" id="scale-z" value="${selectedObject.scale.z}" step="0.1"></label>
-                </div>
-            `;
-            document.getElementById('pos-x').addEventListener('input', (e) => selectedObject.position.x = parseFloat(e.target.value));
-            document.getElementById('pos-y').addEventListener('input', (e) => selectedObject.position.y = parseFloat(e.target.value));
-            document.getElementById('pos-z').addEventListener('input', (e) => selectedObject.position.z = parseFloat(e.target.value));
-            document.getElementById('rot-x').addEventListener('input', (e) => selectedObject.rotation.x = parseFloat(e.target.value));
-            document.getElementById('rot-y').addEventListener('input', (e) => selectedObject.rotation.y = parseFloat(e.target.value));
-            document.getElementById('rot-z').addEventListener('input', (e) => selectedObject.rotation.z = parseFloat(e.target.value));
-            document.getElementById('scale-x').addEventListener('input', (e) => selectedObject.scale.x = parseFloat(e.target.value));
-            document.getElementById('scale-y').addEventListener('input', (e) => selectedObject.scale.y = parseFloat(e.target.value));
-            document.getElementById('scale-z').addEventListener('input', (e) => selectedObject.scale.z = parseFloat(e.target.value));
-        }
+    // DOM Elements
+    const canvas = document.getElementById('doppleit-three-canvas');
+    const sceneContainer = document.querySelector('.canvas-container');
+    const outlinerList = document.getElementById('object-list');
+    const inspectorContent = document.getElementById('inspector-content');
+    const playPauseButton = document.getElementById('doppleit-play-pause');
+    const stopButton = document.getElementById('doppleit-stop');
+    const addKeyframeButton = document.getElementById('add-keyframe');
+    const keyframeTimeInput = document.getElementById('keyframe-time');
+    const keyframeList = document.getElementById('keyframe-list');
+    const selectToolButton = document.getElementById('doppleit-tool-select');
+    const translateToolButton = document.getElementById('doppleit-tool-translate');
+    const rotateToolButton = document.getElementById('doppleit-tool-rotate');
+    const scaleToolButton = document.getElementById('doppleit-tool-scale');
+    const physicsToggleButton = document.getElementById('doppleit-physics-toggle');
+    const snapToggleButton = document.getElementById('doppleit-snap-toggle');
+    const dropZone = document.getElementById('drop-zone');
+    const assetThumbs = document.querySelectorAll('.asset-thumb');
+    const body = document.body;
 
-        // Update Animation
-        function updateAnimation() {
-            if (!selectedObject || !keyframes[selectedObject.name]) return;
-            const frames = keyframes[selectedObject.name].sort((a, b) => a.time - b.time);
-            if (frames.length < 2) return;
-
-            let startFrame, endFrame;
-            for (let i = 0; i < frames.length - 1; i++) {
-                if (animationTime >= frames[i].time && animationTime <= frames[i + 1].time) {
-                    startFrame = frames[i];
-                    endFrame = frames[i + 1];
-                    break;
+    // ====================
+    // PERFORMANCE MONITOR
+    // ====================
+    class PerformanceMonitor {
+        constructor() {
+            this.fps = 0;
+            this.lastCalledTime = performance.now();
+            this.frameTimes = [];
+            this.memoryUsage = 0;
+            
+            setInterval(() => {
+                document.getElementById('fps-counter').textContent = this.fps.toFixed(1);
+                document.getElementById('obj-counter').textContent = scene ? scene.children.length : 0;
+                document.getElementById('mem-counter').textContent = this.memoryUsage.toFixed(1);
+                
+                if (this.frameTimes.length > 0) {
+                    const avgFrameTime = this.frameTimes.reduce((a, b) => a + b) / this.frameTimes.length;
+                    this.fps = 1000 / avgFrameTime;
+                    this.frameTimes = [];
                 }
-            }
-            if (!startFrame || !endFrame) return;
-
-            const t = (animationTime - startFrame.time) / (endFrame.time - startFrame.time);
-            selectedObject.position.lerpVectors(startFrame.position, endFrame.position, t);
-            selectedObject.rotation.lerpVectors(startFrame.rotation, endFrame.rotation, t);
-            selectedObject.scale.lerpVectors(startFrame.scale, endFrame.scale, t);
+                
+                this.memoryUsage = (performance.memory && performance.memory.usedJSHeapSize) ? 
+                    performance.memory.usedJSHeapSize / (1024 * 1024) : 0;
+            }, 1000);
         }
 
-        // Add Keyframe
-        function addKeyframe() {
-            if (!selectedObject) {
-                showError('Select an object to add a keyframe.');
-                return;
-            }
-            const time = parseFloat(document.getElementById('keyframe-time').value);
-            if (!keyframes[selectedObject.name]) keyframes[selectedObject.name] = [];
-            keyframes[selectedObject.name].push({
-                time,
-                position: selectedObject.position.clone(),
-                rotation: selectedObject.rotation.clone(),
-                scale: selectedObject.scale.clone(),
-            });
-            updateKeyframeList();
+        update() {
+            const now = performance.now();
+            const delta = now - this.lastCalledTime;
+            this.lastCalledTime = now;
+            this.frameTimes.push(delta);
         }
+    }
 
-        // Update Keyframe List
-        function updateKeyframeList() {
-            keyframeList.innerHTML = '';
-            if (!selectedObject || !keyframes[selectedObject.name]) return;
-            keyframes[selectedObject.name].forEach((frame, index) => {
-                const div = document.createElement('div');
-                div.className = 'keyframe-item';
-                div.textContent = `Time: ${frame.time}s`;
-                div.addEventListener('click', () => {
-                    document.getElementById('keyframe-time').value = frame.time;
-                });
-                keyframeList.appendChild(div);
+    const perfMonitor = new PerformanceMonitor();
+    DoppleitAPI.register('PerformanceMonitor', perfMonitor);
+
+    // ====================
+    // TRANSFORM GIZMO
+    // ====================
+    class TransformGizmo {
+        constructor() {
+            this.gizmo = new TransformControlsGizmo(transformControls, {
+                size: 100,
+                padding: 10
             });
+            document.getElementById('transform-gizmo').appendChild(this.gizmo.domElement);
         }
+    }
 
-        // Show Error
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.add('show');
-            setTimeout(() => errorMessage.classList.remove('show'), 3000);
-        }
+    // ====================
+    // INITIALIZATION
+    // ====================
+    function init() {
+        // Initialize Three.js scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);
 
-        // Event Listeners
-        document.getElementById('doppleit-tool-select').addEventListener('click', () => {
-            currentMode = 'select';
-            transformControls.detach();
-            document.querySelectorAll('#toolbar button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('doppleit-tool-select').classList.add('active');
-            statusBar.textContent = 'Mode: Select Object';
-        });
-
-        document.getElementById('doppleit-tool-translate').addEventListener('click', () => {
-            currentMode = 'translate';
-            if (selectedObject) {
-                transformControls.attach(selectedObject);
-                transformControls.setMode('translate');
-            }
-            document.querySelectorAll('#toolbar button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('doppleit-tool-translate').classList.add('active');
-            statusBar.textContent = 'Mode: Translate';
-        });
-
-        document.getElementById('doppleit-tool-rotate').addEventListener('click', () => {
-            currentMode = 'rotate';
-            if (selectedObject) {
-                transformControls.attach(selectedObject);
-                transformControls.setMode('rotate');
-            }
-            document.querySelectorAll('#toolbar button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('doppleit-tool-rotate').classList.add('active');
-            statusBar.textContent = 'Mode: Rotate';
-        });
-
-        document.getElementById('doppleit-tool-scale').addEventListener('click', () => {
-            currentMode = 'scale';
-            if (selectedObject) {
-                transformControls.attach(selectedObject);
-                transformControls.setMode('scale');
-            }
-            document.querySelectorAll('#toolbar button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('doppleit-tool-scale').classList.add('active');
-            statusBar.textContent = 'Mode: Scale';
-        });
-
-        document.getElementById('doppleit-speed-fast').addEventListener('click', () => {
-            animationSpeed = 'fast';
-            fps = 60;
-            document.getElementById('doppleit-speed-fast').classList.add('active');
-            document.getElementById('doppleit-speed-final').classList.remove('active');
-        });
-
-        document.getElementById('doppleit-speed-final').addEventListener('click', () => {
-            animationSpeed = 'final';
-            fps = 30;
-            document.getElementById('doppleit-speed-final').classList.add('active');
-            document.getElementById('doppleit-speed-fast').classList.remove('active');
-        });
-
-        document.getElementById('doppleit-theme').addEventListener('change', (e) => {
-            const value = e.target.value;
-            if (value === 'ocean') {
-                document.body.style.background = 'linear-gradient(135deg, #1E90FF 0%, #00CED1 100%)';
-            } else if (value === 'sunset') {
-                document.body.style.background = 'linear-gradient(135deg, #FF4500 0%, #FFD700 100%)';
-            } else {
-                document.body.style.background = isDarkMode ? 'linear-gradient(135deg, #1A1E2E 0%, #2A2D4A 100%)' : 'linear-gradient(135deg, #E6EFFF 0%, #D6C4FF 100%)';
-            }
-        });
-
-        document.getElementById('doppleit-dark-mode').addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark');
-            document.getElementById('doppleit-dark-mode').textContent = `Dark Mode: ${isDarkMode ? 'On' : 'Off'}`;
-            document.getElementById('doppleit-theme').value = 'default';
-        });
-
-        document.getElementById('add-cube').addEventListener('click', () => addObject('cube'));
-        document.getElementById('add-sphere').addEventListener('click', () => addObject('sphere'));
-        document.getElementById('add-cone').addEventListener('click', () => addObject('cone'));
-        document.getElementById('add-torus').addEventListener('click', () => addObject('torus'));
-        document.getElementById('add-plane').addEventListener('click', () => addObject('plane'));
-
-        document.getElementById('doppleit-reset-view').addEventListener('click', () => {
-            camera.position.set(5, 5, 5);
-            camera.lookAt(0, 0, 0);
-            orbitControls.reset();
-        });
-
-        document.getElementById('doppleit-clear-scene').addEventListener('click', () => {
-            objects.forEach(obj => scene.remove(obj));
-            objects = [];
-            selectedObject = null;
-            transformControls.detach();
-            keyframes = {};
-            updateObjectList();
-            updateInspector();
-            updateKeyframeList();
-        });
-
-        document.getElementById('doppleit-toggle-grid').addEventListener('change', (e) => {
-            gridHelper.visible = e.target.checked;
-        });
-
-        document.getElementById('doppleit-duration').addEventListener('input', (e) => {
-            animationDuration = parseFloat(e.target.value);
-        });
-
-        document.getElementById('doppleit-fps').addEventListener('change', (e) => {
-            fps = parseInt(e.target.value);
-        });
-
-        document.getElementById('background-color').addEventListener('input', (e) => {
-            scene.background = new THREE.Color(e.target.value);
-        });
-
-        document.getElementById('camera-target-x').addEventListener('input', (e) => {
-            camera.lookAt(parseFloat(e.target.value), camera.lookAt.y, camera.lookAt.z);
-        });
-
-        document.getElementById('camera-target-y').addEventListener('input', (e) => {
-            camera.lookAt(camera.lookAt.x, parseFloat(e.target.value), camera.lookAt.z);
-        });
-
-        document.getElementById('camera-target-z').addEventListener('input', (e) => {
-            camera.lookAt(camera.lookAt.x, camera.lookAt.y, parseFloat(e.target.value));
-        });
-
-        document.getElementById('reset-scene').addEventListener('click', () => {
-            scene.background = new THREE.Color(0x000000);
-            camera.position.set(5, 5, 5);
-            camera.lookAt(0, 0, 0);
-            document.getElementById('background-color').value = '#000000';
-            document.getElementById('camera-target-x').value = 0;
-            document.getElementById('camera-target-y').value = 0;
-            document.getElementById('camera-target-z').value = 0;
-        });
-
-        document.getElementById('material-color').addEventListener('input', (e) => {
-            if (selectedObject) selectedObject.material.color.set(e.target.value);
-        });
-
-        document.getElementById('material-wireframe').addEventListener('change', (e) => {
-            if (selectedObject) selectedObject.material.wireframe = e.target.checked;
-        });
-
-        document.getElementById('material-opacity').addEventListener('input', (e) => {
-            if (selectedObject) {
-                selectedObject.material.opacity = parseFloat(e.target.value);
-                selectedObject.material.transparent = true;
-            }
-        });
-
-        document.getElementById('ambient-color').addEventListener('input', (e) => {
-            ambientLight.color.set(e.target.value);
-        });
-
-        document.getElementById('ambient-intensity').addEventListener('input', (e) => {
-            ambientLight.intensity = parseFloat(e.target.value);
-        });
-
-        document.getElementById('directional-color').addEventListener('input', (e) => {
-            directionalLight.color.set(e.target.value);
-        });
-
-        document.getElementById('directional-intensity').addEventListener('input', (e) => {
-            directionalLight.intensity = parseFloat(e.target.value);
-        });
-
-        document.getElementById('directional-x').addEventListener('input', (e) => {
-            directionalLight.position.x = parseFloat(e.target.value);
-        });
-
-        document.getElementById('directional-y').addEventListener('input', (e) => {
-            directionalLight.position.y = parseFloat(e.target.value);
-        });
-
-        document.getElementById('directional-z').addEventListener('input', (e) => {
-            directionalLight.position.z = parseFloat(e.target.value);
-        });
-
-        document.getElementById('doppleit-play-pause').addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            playPauseBtn.textContent = isPlaying ? 'Pause' : 'Play';
-        });
-
-        document.getElementById('doppleit-stop').addEventListener('click', () => {
-            isPlaying = false;
-            animationTime = 0;
-            playPauseBtn.textContent = 'Play';
-            objects.forEach(obj => {
-                if (keyframes[obj.name] && keyframes[obj.name].length > 0) {
-                    const frame = keyframes[obj.name][0];
-                    obj.position.copy(frame.position);
-                    obj.rotation.copy(frame.rotation);
-                    obj.scale.copy(frame.scale);
-                }
-            });
-        });
-
-        document.getElementById('add-keyframe').addEventListener('click', addKeyframe);
-
-        document.getElementById('doppleit-save').addEventListener('click', () => {
-            const state = {
-                objects: objects.map(obj => ({
-                    name: obj.name,
-                    type: obj.geometry.type,
-                    position: obj.position.toArray(),
-                    rotation: obj.rotation.toArray(),
-                    scale: obj.scale.toArray(),
-                    material: {
-                        color: obj.material.color.getHex(),
-                        opacity: obj.material.opacity,
-                        wireframe: obj.material.wireframe,
-                    },
-                })),
-                keyframes,
-                scene: {
-                    background: scene.background.getHex(),
-                },
-            };
-            const blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'doppleit-scene.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        });
-
-        document.getElementById('doppleit-load').addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json';
-            input.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const state = JSON.parse(event.target.result);
-                        objects.forEach(obj => scene.remove(obj));
-                        objects = [];
-                        state.objects.forEach(objData => {
-                            let geometry;
-                            switch (objData.type) {
-                                case 'BoxGeometry':
-                                    geometry = new THREE.BoxGeometry();
-                                    break;
-                                case 'SphereGeometry':
-                                    geometry = new THREE.SphereGeometry(0.5, 32, 32);
-                                    break;
-                                case 'ConeGeometry':
-                                    geometry = new THREE.ConeGeometry(0.5, 1, 32);
-                                    break;
-                                case 'TorusGeometry':
-                                    geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
-                                    break;
-                                case 'PlaneGeometry':
-                                    geometry = new THREE.PlaneGeometry(1, 1);
-                                    break;
-                            }
-                            const material = new THREE.MeshPhongMaterial({
-                                color: objData.material.color,
-                                opacity: objData.material.opacity,
-                                transparent: true,
-                                wireframe: objData.material.wireframe,
-                            });
-                            const mesh = new THREE.Mesh(geometry, material);
-                            mesh.name = objData.name;
-                            mesh.position.fromArray(objData.position);
-                            mesh.rotation.fromArray(objData.rotation);
-                            mesh.scale.fromArray(objData.scale);
-                            scene.add(mesh);
-                            objects.push(mesh);
-                        });
-                        keyframes = state.keyframes || {};
-                        scene.background = new THREE.Color(state.scene.background);
-                        document.getElementById('background-color').value = '#' + state.scene.background.toString(16).padStart(6, '0');
-                        updateObjectList();
-                        updateInspector();
-                        updateKeyframeList();
-                    } catch (err) {
-                        showError(`Failed to load scene: ${err.message}`);
-                    }
-                };
-                reader.readAsText(file);
-            });
-            input.click();
-        });
-
-        document.getElementById('doppleit-import-json').addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json';
-            input.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const state = JSON.parse(event.target.result);
-                        objects.forEach(obj => scene.remove(obj));
-                        objects = [];
-                        state.objects.forEach(objData => {
-                            let geometry;
-                            switch (objData.type) {
-                                case 'BoxGeometry':
-                                    geometry = new THREE.BoxGeometry();
-                                    break;
-                                case 'SphereGeometry':
-                                    geometry = new THREE.SphereGeometry(0.5, 32, 32);
-                                    break;
-                                case 'ConeGeometry':
-                                    geometry = new THREE.ConeGeometry(0.5, 1, 32);
-                                    break;
-                                case 'TorusGeometry':
-                                    geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
-                                    break;
-                                case 'PlaneGeometry':
-                                    geometry = new THREE.PlaneGeometry(1, 1);
-                                    break;
-                            }
-                            const material = new THREE.MeshPhongMaterial({
-                                color: objData.material.color,
-                                opacity: objData.material.opacity,
-                                transparent: true,
-                                wireframe: objData.material.wireframe,
-                            });
-                            const mesh = new THREE.Mesh(geometry, material);
-                            mesh.name = objData.name;
-                            mesh.position.fromArray(objData.position);
-                            mesh.rotation.fromArray(objData.rotation);
-                            mesh.scale.fromArray(objData.scale);
-                            scene.add(mesh);
-                            objects.push(mesh);
-                        });
-                        keyframes = state.keyframes || {};
-                        scene.background = new THREE.Color(state.scene.background);
-                        document.getElementById('background-color').value = '#' + state.scene.background.toString(16).padStart(6, '0');
-                        updateObjectList();
-                        updateInspector();
-                        updateKeyframeList();
-                    } catch (err) {
-                        showError(`Failed to import scene: ${err.message}`);
-                    }
-                };
-                reader.readAsText(file);
-            });
-            input.click();
-        });
-
-        document.getElementById('doppleit-export-json').addEventListener('click', () => {
-            const state = {
-                objects: objects.map(obj => ({
-                    name: obj.name,
-                    type: obj.geometry.type,
-                    position: obj.position.toArray(),
-                    rotation: obj.rotation.toArray(),
-                    scale: obj.scale.toArray(),
-                    material: {
-                        color: obj.material.color.getHex(),
-                        opacity: obj.material.opacity,
-                        wireframe: obj.material.wireframe,
-                    },
-                })),
-                keyframes,
-                scene: {
-                    background: scene.background.getHex(),
-                },
-            };
-            const blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'doppleit-scene.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        });
-
-        document.getElementById('doppleit-export-embed').addEventListener('click', () => {
-            const state = {
-                objects: objects.map(obj => ({
-                    name: obj.name,
-                    type: obj.geometry.type,
-                    position: obj.position.toArray(),
-                    rotation: obj.rotation.toArray(),
-                    scale: obj.scale.toArray(),
-                    material: {
-                        color: obj.material.color.getHex(),
-                        opacity: obj.material.opacity,
-                        wireframe: obj.material.wireframe,
-                    },
-                })),
-                scene: {
-                    background: scene.background.getHex(),
-                },
-            };
-            const html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doppleit 3D Embed</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r165/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.165.0/examples/jsm/controls/OrbitControls.js"></script>
-    <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { width: 100%; height: 100vh; }
-    </style>
-</head>
-<body>
-    <canvas id="embed-canvas"></canvas>
-    <script>
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('embed-canvas'), antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-
+        // Setup camera
+        camera = new THREE.PerspectiveCamera(
+            75, 
+            sceneContainer.clientWidth / sceneContainer.clientHeight, 
+            0.1, 
+            1000
+        );
         camera.position.set(5, 5, 5);
         camera.lookAt(0, 0, 0);
 
-        const orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
-        orbitControls.enableDamping = true;
-        orbitControls.dampingFactor = 0.05;
+        // Setup renderer
+        renderer = new THREE.WebGLRenderer({ 
+            canvas: canvas,
+            antialias: true 
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+        renderer.shadowMap.enabled = DoppleitConfig.shadows;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        // Setup controls
+        orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+        orbitControls.enableDamping = true;
+        orbitControls.dampingFactor = 0.25;
+
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+        transformControls.addEventListener('dragging-changed', (event) => {
+            orbitControls.enabled = !event.value;
+            if (!event.value && !isUndoingRedoing) {
+                saveState();
+            }
+        });
+        transformControls.addEventListener('objectChange', () => {
+            updateInspector();
+        });
+        scene.add(transformControls);
+
+        // Setup lights
+        ambientLight = new THREE.AmbientLight(0x404040);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(5, 5, 5);
+        directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 7);
+        directionalLight.castShadow = DoppleitConfig.shadows;
+        directionalLight.shadow.mapSize.width = 1024;
+        directionalLight.shadow.mapSize.height = 1024;
         scene.add(directionalLight);
 
-        scene.background = new THREE.Color(${state.scene.background});
+        // Setup grid helper
+        gridHelper = new THREE.GridHelper(20, 20, 0x888888, 0x888888);
+        scene.add(gridHelper);
 
-        ${state.objects.map(obj => `
-            const geometry_${obj.name} = new THREE.${obj.type}(${obj.type === 'BoxGeometry' ? '' : obj.type === 'SphereGeometry' ? '0.5, 32, 32' : obj.type === 'ConeGeometry' ? '0.5, 1, 32' : obj.type === 'TorusGeometry' ? '0.5, 0.2, 16, 100' : '1, 1'});
-            const material_${obj.name} = new THREE.MeshPhongMaterial({ color: ${obj.material.color}, opacity: ${obj.material.opacity}, transparent: true, wireframe: ${obj.material.wireframe} });
-            const mesh_${obj.name} = new THREE.Mesh(geometry_${obj.name}, material_${obj.name});
-            mesh_${obj.name}.position.fromArray([${obj.position.join(',')}]);
-            mesh_${obj.name}.rotation.fromArray([${obj.rotation.join(',')}]);
-            mesh_${obj.name}.scale.fromArray([${obj.scale.join(',')}]);
-            scene.add(mesh_${obj.name});
-        `).join('\n')}
+        // Setup physics world
+        world = new CANNON.World();
+        world.gravity.set(
+            DoppleitConfig.physics.gravity.x,
+            DoppleitConfig.physics.gravity.y,
+            DoppleitConfig.physics.gravity.z
+        );
+        world.broadphase = new CANNON.SAPBroadphase(world);
+        world.allowSleep = DoppleitConfig.physics.allowSleep;
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+        // Setup post-processing
+        const renderScene = new THREE.RenderPass(scene, camera);
+        bloomPass = new THREE.UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            DoppleitConfig.postProcessing.bloom.strength,
+            DoppleitConfig.postProcessing.bloom.radius,
+            DoppleitConfig.postProcessing.bloom.threshold
+        );
+
+        composer = new THREE.EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        // Initialize Gizmo
+        new TransformGizmo();
+
+        // Event listeners
+        window.addEventListener('resize', onWindowResize);
+        renderer.domElement.addEventListener('click', onCanvasClick);
+        renderer.domElement.addEventListener('mousedown', onCanvasMouseDown);
+        renderer.domElement.addEventListener('mouseup', onCanvasMouseUp);
+        document.addEventListener('keydown', onKeyDown);
+
+        // Tool buttons
+        selectToolButton.addEventListener('click', () => setTransformMode('select'));
+        translateToolButton.addEventListener('click', () => setTransformMode('translate'));
+        rotateToolButton.addEventListener('click', () => setTransformMode('rotate'));
+        scaleToolButton.addEventListener('click', () => setTransformMode('scale'));
+        physicsToggleButton.addEventListener('click', togglePhysics);
+        snapToggleButton.addEventListener('click', toggleSnap);
+        playPauseButton.addEventListener('click', togglePlayback);
+        stopButton.addEventListener('click', stopPlayback);
+        addKeyframeButton.addEventListener('click', addKeyframe);
+
+        // Drag and drop for assets
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('active');
         });
 
-        function animate() {
-            requestAnimationFrame(animate);
-            orbitControls.update();
-            renderer.render(scene, camera);
-        }
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('active');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            handleFileDrop(e.dataTransfer.files);
+        });
+
+        // Asset thumbnails
+        assetThumbs.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                createPrimitive(thumb.dataset.geometry);
+            });
+        });
+
+        // Hide loading screen
+        setTimeout(() => {
+            document.getElementById('loading').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+            }, 300);
+        }, 500);
+
+        // Start animation loop
         animate();
-    </script>
-</body>
-</html>
-            `;
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'doppleit-embed.html';
-            a.click();
-            URL.revokeObjectURL(url);
+    }
+
+    // ====================
+    // CORE FUNCTIONS
+    // ====================
+    function animate() {
+        requestAnimationFrame(animate);
+        perfMonitor.update();
+
+        // Update physics if enabled
+        if (physicsEnabled) {
+            world.step(1/60);
+            scene.children.forEach(obj => {
+                if (obj.userData.body) {
+                    obj.position.copy(obj.userData.body.position);
+                    obj.quaternion.copy(obj.userData.body.quaternion);
+                }
+            });
+        }
+
+        orbitControls.update();
+        composer.render();
+    }
+
+    function onWindowResize() {
+        camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+        composer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+    }
+
+    function onCanvasClick(event) {
+        event.preventDefault();
+
+        const mouse = new THREE.Vector2(
+            (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+            -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+        );
+
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(scene.children, true);
+
+        if (intersects.length > 0) {
+            let object = intersects[0].object;
+            
+            // Find the top-most parent that's not the scene
+            while (object.parent && object.parent !== scene) {
+                object = object.parent;
+            }
+
+            selectObject(object);
+        } else {
+            deselectAll();
+        }
+    }
+
+    function onCanvasMouseDown(event) {
+        if (event.target === renderer.domElement && transformControls.dragging) {
+            orbitControls.enabled = false;
+        }
+    }
+
+    function onCanvasMouseUp() {
+        orbitControls.enabled = true;
+    }
+
+    function onKeyDown(event) {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+            deleteSelectedObjects();
+        }
+        
+        if (event.ctrlKey || event.metaKey) {
+            if (event.key === 'z' && !event.shiftKey) {
+                undo();
+            } else if (event.key === 'z' && event.shiftKey) {
+                redo();
+            } else if (event.key === 'y') {
+                redo();
+            }
+        }
+    }
+
+    // ====================
+    // OBJECT MANAGEMENT
+    // ====================
+    function createPrimitive(type, position = new THREE.Vector3(0, 0, 0)) {
+        let geometry, material, mesh;
+        
+        switch(type) {
+            case 'box':
+                geometry = new THREE.BoxGeometry(1, 1, 1);
+                break;
+            case 'sphere':
+                geometry = new THREE.SphereGeometry(0.5, 32, 32);
+                break;
+            case 'cone':
+                geometry = new THREE.ConeGeometry(0.5, 1, 32);
+                break;
+            case 'torus':
+                geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 32);
+                break;
+            case 'plane':
+                geometry = new THREE.PlaneGeometry(5, 5);
+                break;
+            default:
+                geometry = new THREE.BoxGeometry(1, 1, 1);
+        }
+
+        material = new THREE.MeshStandardMaterial({ 
+            color: new THREE.Color(Math.random() * 0xffffff),
+            roughness: 0.7,
+            metalness: 0.2
         });
 
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'g') document.getElementById('doppleit-tool-translate').click();
-            if (e.key === 'r') document.getElementById('doppleit-tool-rotate').click();
-            if (e.key === 's') document.getElementById('doppleit-tool-scale').click();
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(position);
+        mesh.castShadow = DoppleitConfig.shadows;
+        mesh.receiveShadow = DoppleitConfig.shadows;
+        
+        if (physicsEnabled) {
+            addPhysicsBody(mesh, type);
+        }
+
+        scene.add(mesh);
+        addToOutliner(mesh);
+        selectObject(mesh);
+        saveState();
+        
+        DoppleitAPI.trigger('object.created', mesh);
+        
+        return mesh;
+    }
+
+    function addPhysicsBody(mesh, type) {
+        let shape, mass = 1;
+        
+        switch(type) {
+            case 'box':
+                shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+                break;
+            case 'sphere':
+                shape = new CANNON.Sphere(0.5);
+                break;
+            case 'cone':
+                shape = new CANNON.Cylinder(0.001, 0.5, 1, 8);
+                break;
+            case 'torus':
+                shape = new CANNON.Box(new CANNON.Vec3(0.7, 0.2, 0.7));
+                break;
+            case 'plane':
+                shape = new CANNON.Plane();
+                mass = 0;
+                break;
+            default:
+                shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+        }
+
+        const body = new CANNON.Body({ mass, shape });
+        body.position.copy(mesh.position);
+        body.quaternion.copy(mesh.quaternion);
+        
+        if (type === 'cone') {
+            body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+        }
+        
+        world.addBody(body);
+        mesh.userData.body = body;
+        
+        DoppleitAPI.trigger('physics.bodyAdded', { mesh, body });
+    }
+
+    function selectObject(object) {
+        if (selectedObject === object) return;
+        
+        deselectAll();
+        
+        selectedObject = object;
+        selectedObjects.add(object);
+        
+        object.userData.originalMaterial = object.material;
+        object.material = object.material.clone();
+        object.material.emissive.setHex(0x444444);
+        
+        transformControls.attach(object);
+        transformControls.showX = true;
+        transformControls.showY = true;
+        transformControls.showZ = true;
+        
+        updateOutlinerSelection();
+        updateInspector();
+        
+        DoppleitAPI.trigger('object.selected', object);
+    }
+
+    function deselectAll() {
+        if (selectedObject) {
+            if (selectedObject.userData.originalMaterial) {
+                selectedObject.material = selectedObject.userData.originalMaterial;
+            }
+            
+            transformControls.detach();
+            
+            selectedObject = null;
+            selectedObjects.clear();
+            
+            updateOutlinerSelection();
+            updateInspector();
+            
+            DoppleitAPI.trigger('object.deselected');
+        }
+    }
+
+    function deleteSelectedObjects() {
+        if (selectedObjects.size === 0) return;
+        
+        selectedObjects.forEach(obj => {
+            if (obj.userData.body) {
+                world.removeBody(obj.userData.body);
+            }
+            
+            scene.remove(obj);
+            
+            const listItem = document.querySelector(`[data-uuid="${obj.uuid}"]`);
+            if (listItem) {
+                outlinerList.removeChild(listItem);
+            }
+            
+            DoppleitAPI.trigger('object.deleted', obj);
+        });
+        
+        deselectAll();
+        saveState();
+    }
+
+    // ====================
+    // OUTLINER & INSPECTOR
+    // ====================
+    function addToOutliner(object) {
+        const listItem = document.createElement('li');
+        listItem.textContent = object.name || `${object.geometry.type} (${object.uuid.slice(0, 8)})`;
+        listItem.dataset.uuid = object.uuid;
+        listItem.addEventListener('click', () => selectObject(object));
+        outlinerList.appendChild(listItem);
+        objectMap.set(object.uuid, object);
+    }
+
+    function updateOutlinerSelection() {
+        const items = outlinerList.querySelectorAll('li');
+        items.forEach(item => {
+            if (selectedObjects.has(objectMap.get(item.dataset.uuid))) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    }
+
+    function updateInspector() {
+        if (!selectedObject) {
+            inspectorContent.innerHTML = '<p>Select an object to edit its properties.</p>';
+            return;
+        }
+
+        inspectorContent.innerHTML = `
+            <h3>${selectedObject.name || 'Object'}</h3>
+            <div class="control-group">
+                <label>Position</label>
+                <div class="vector-controls">
+                    <input type="number" class="vector-x" value="${selectedObject.position.x.toFixed(2)}" step="0.1">
+                    <input type="number" class="vector-y" value="${selectedObject.position.y.toFixed(2)}" step="0.1">
+                    <input type="number" class="vector-z" value="${selectedObject.position.z.toFixed(2)}" step="0.1">
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Rotation</label>
+                <div class="vector-controls">
+                    <input type="number" class="vector-x" value="${THREE.MathUtils.radToDeg(selectedObject.rotation.x).toFixed(1)}" step="1">
+                    <input type="number" class="vector-y" value="${THREE.MathUtils.radToDeg(selectedObject.rotation.y).toFixed(1)}" step="1">
+                    <input type="number" class="vector-z" value="${THREE.MathUtils.radToDeg(selectedObject.rotation.z).toFixed(1)}" step="1">
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Scale</label>
+                <div class="vector-controls">
+                    <input type="number" class="vector-x" value="${selectedObject.scale.x.toFixed(2)}" step="0.1">
+                    <input type="number" class="vector-y" value="${selectedObject.scale.y.toFixed(2)}" step="0.1">
+                    <input type="number" class="vector-z" value="${selectedObject.scale.z.toFixed(2)}" step="0.1">
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Color</label>
+                <input type="color" value="#${selectedObject.material.color.getHexString()}">
+            </div>
+            <div class="control-group">
+                <label>Visible</label>
+                <input type="checkbox" id="visible-toggle" ${selectedObject.visible ? 'checked' : ''}>
+                <label for="visible-toggle">Visible</label>
+            </div>
+            <div class="control-group">
+                <label>Cast Shadow</label>
+                <input type="checkbox" id="cast-shadow-toggle" ${selectedObject.castShadow ? 'checked' : ''}>
+                <label for="cast-shadow-toggle">Cast Shadow</label>
+            </div>
+            <div class="control-group">
+                <label>Receive Shadow</label>
+                <input type="checkbox" id="receive-shadow-toggle" ${selectedObject.receiveShadow ? 'checked' : ''}>
+                <label for="receive-shadow-toggle">Receive Shadow</label>
+            </div>
+            <button id="delete-object">Delete Object</button>
+        `;
+
+        // Add event listeners to inspector controls
+        const positionInputs = inspectorContent.querySelectorAll('.control-group:nth-child(2) input');
+        positionInputs.forEach((input, index) => {
+            input.addEventListener('change', (e) => {
+                selectedObject.position.setComponent(index, parseFloat(e.target.value));
+                if (selectedObject.userData.body) {
+                    selectedObject.userData.body.position.copy(selectedObject.position);
+                }
+                saveState();
+            });
         });
 
-        // Initialize
-        init();
-    </script>
+        const rotationInputs = inspectorContent.querySelectorAll('.control-group:nth-child(3) input');
+        rotationInputs.forEach((input, index) => {
+            input.addEventListener('change', (e) => {
+                selectedObject.rotation.setComponent(index,
+                selectedObject.rotation.setComponent(index, THREE.MathUtils.degToRad(parseFloat(e.target.value)));
+                if (selectedObject.userData.body) {
+                    selectedObject.userData.body.quaternion.copy(selectedObject.quaternion);
+                }
+                saveState();
+            });
+        });
+
+        const scaleInputs = inspectorContent.querySelectorAll('.control-group:nth-child(4) input');
+        scaleInputs.forEach((input, index) => {
+            input.addEventListener('change', (e) => {
+                selectedObject.scale.setComponent(index, parseFloat(e.target.value));
+                saveState();
+            });
+        });
+
+        const colorInput = inspectorContent.querySelector('input[type="color"]');
+        colorInput.addEventListener('change', (e) => {
+            selectedObject.material.color.setHex(parseInt(e.target.value.replace('#', ''), 16));
+            saveState();
+        });
+
+        const visibleToggle = inspectorContent.querySelector('#visible-toggle');
+        visibleToggle.addEventListener('change', (e) => {
+            selectedObject.visible = e.target.checked;
+            saveState();
+        });
+
+        const castShadowToggle = inspectorContent.querySelector('#cast-shadow-toggle');
+        castShadowToggle.addEventListener('change', (e) => {
+            selectedObject.castShadow = e.target.checked;
+            saveState();
+        });
+
+        const receiveShadowToggle = inspectorContent.querySelector('#receive-shadow-toggle');
+        receiveShadowToggle.addEventListener('change', (e) => {
+            selectedObject.receiveShadow = e.target.checked;
+            saveState();
+        });
+
+        const deleteButton = inspectorContent.querySelector('#delete-object');
+        deleteButton.addEventListener('click', deleteSelectedObjects);
+    }
+
+    // ====================
+    // TRANSFORM CONTROLS
+    // ====================
+    function setTransformMode(mode) {
+        transformControls.setMode(mode);
+        
+        // Update button states
+        selectToolButton.classList.toggle('active', mode === 'select');
+        translateToolButton.classList.toggle('active', mode === 'translate');
+        rotateToolButton.classList.toggle('active', mode === 'rotate');
+        scaleToolButton.classList.toggle('active', mode === 'scale');
+        
+        if (mode === 'select') {
+            transformControls.detach();
+        } else if (selectedObject) {
+            transformControls.attach(selectedObject);
+        }
+    }
+
+    function toggleSnap() {
+        snapEnabled = !snapEnabled;
+        snapToggleButton.textContent = `Snap: ${snapEnabled ? 'On' : 'Off'}`;
+        
+        if (snapEnabled) {
+            transformControls.setTranslationSnap(DoppleitConfig.snap.translate);
+            transformControls.setRotationSnap(THREE.MathUtils.degToRad(DoppleitConfig.snap.rotate));
+            transformControls.setScaleSnap(DoppleitConfig.snap.scale);
+        } else {
+            transformControls.setTranslationSnap(null);
+            transformControls.setRotationSnap(null);
+            transformControls.setScaleSnap(null);
+        }
+    }
+
+    // ====================
+    // PHYSICS
+    // ====================
+    function togglePhysics() {
+        physicsEnabled = !physicsEnabled;
+        physicsToggleButton.textContent = `Physics: ${physicsEnabled ? 'On' : 'Off'}`;
+        
+        if (physicsEnabled) {
+            // Add physics bodies to all existing objects
+            scene.children.forEach(obj => {
+                if (obj.isMesh && !obj.userData.body) {
+                    let type = 'box';
+                    if (obj.geometry instanceof THREE.SphereGeometry) type = 'sphere';
+                    else if (obj.geometry instanceof THREE.ConeGeometry) type = 'cone';
+                    else if (obj.geometry instanceof THREE.TorusGeometry) type = 'torus';
+                    else if (obj.geometry instanceof THREE.PlaneGeometry) type = 'plane';
+                    
+                    addPhysicsBody(obj, type);
+                }
+            });
+        } else {
+            // Remove all physics bodies
+            scene.children.forEach(obj => {
+                if (obj.userData.body) {
+                    world.removeBody(obj.userData.body);
+                    delete obj.userData.body;
+                }
+            });
+        }
+    }
+
+    // ====================
+    // TIMELINE & KEYFRAMES
+    // ====================
+    function togglePlayback() {
+        isPlaying = !isPlaying;
+        playPauseButton.textContent = isPlaying ? 'Pause' : 'Play';
+        stopButton.disabled = isPlaying ? false : true;
+        
+        if (isPlaying) {
+            timelineInterval = setInterval(() => {
+                currentKeyframeTime += 0.1;
+                keyframeTimeInput.value = currentKeyframeTime.toFixed(1);
+                updateSceneToKeyframe(currentKeyframeTime);
+            }, 100);
+        } else {
+            clearInterval(timelineInterval);
+        }
+    }
+
+    function stopPlayback() {
+        isPlaying = false;
+        playPauseButton.textContent = 'Play';
+        stopButton.disabled = true;
+        clearInterval(timelineInterval);
+        currentKeyframeTime = 0;
+        keyframeTimeInput.value = '0';
+        updateSceneToKeyframe(0);
+    }
+
+    function addKeyframe() {
+        const time = parseFloat(keyframeTimeInput.value);
+        if (isNaN(time)) return;
+        
+        const keyframe = {
+            time,
+            objects: []
+        };
+        
+        scene.children.forEach(obj => {
+            if (obj.isMesh) {
+                keyframe.objects.push({
+                    uuid: obj.uuid,
+                    position: obj.position.clone(),
+                    rotation: obj.rotation.clone(),
+                    scale: obj.scale.clone()
+                });
+            }
+        });
+        
+        // Remove any existing keyframe at this time
+        keyframes = keyframes.filter(k => k.time !== time);
+        keyframes.push(keyframe);
+        keyframes.sort((a, b) => a.time - b.time);
+        
+        updateKeyframeList();
+        saveState();
+    }
+
+    function updateKeyframeList() {
+        keyframeList.innerHTML = '';
+        keyframes.forEach((keyframe, index) => {
+            const item = document.createElement('div');
+            item.className = 'keyframe-item';
+            item.textContent = `Keyframe at ${keyframe.time.toFixed(1)}s`;
+            item.addEventListener('click', () => {
+                currentKeyframeTime = keyframe.time;
+                keyframeTimeInput.value = keyframe.time.toFixed(1);
+                updateSceneToKeyframe(keyframe.time);
+            });
+            keyframeList.appendChild(item);
+        });
+    }
+
+    function updateSceneToKeyframe(time) {
+        // Find the two closest keyframes
+        let prevKeyframe = null;
+        let nextKeyframe = null;
+        
+        for (const keyframe of keyframes) {
+            if (keyframe.time <= time) {
+                prevKeyframe = keyframe;
+            } else {
+                nextKeyframe = keyframe;
+                break;
+            }
+        }
+        
+        if (!prevKeyframe && !nextKeyframe) return;
+        
+        if (prevKeyframe && !nextKeyframe) {
+            // Only previous keyframe exists - set to that
+            applyKeyframe(prevKeyframe);
+        } else if (!prevKeyframe && nextKeyframe) {
+            // Only next keyframe exists - set to that
+            applyKeyframe(nextKeyframe);
+        } else {
+            // Interpolate between the two keyframes
+            const t = (time - prevKeyframe.time) / (nextKeyframe.time - prevKeyframe.time);
+            interpolateKeyframes(prevKeyframe, nextKeyframe, t);
+        }
+    }
+
+    function applyKeyframe(keyframe) {
+        keyframe.objects.forEach(objData => {
+            const obj = objectMap.get(objData.uuid);
+            if (obj) {
+                obj.position.copy(objData.position);
+                obj.rotation.copy(objData.rotation);
+                obj.scale.copy(objData.scale);
+                
+                if (obj.userData.body) {
+                    obj.userData.body.position.copy(objData.position);
+                    obj.userData.body.quaternion.copy(
+                        new THREE.Quaternion().setFromEuler(objData.rotation)
+                    );
+                }
+            }
+        });
+    }
+
+    function interpolateKeyframes(prevKeyframe, nextKeyframe, t) {
+        const interpolatedObjects = {};
+        
+        // Create a map of objects from the next keyframe
+        nextKeyframe.objects.forEach(objData => {
+            interpolatedObjects[objData.uuid] = objData;
+        });
+        
+        // Interpolate with previous keyframe
+        prevKeyframe.objects.forEach(objData => {
+            const nextObjData = interpolatedObjects[objData.uuid];
+            if (nextObjData) {
+                const obj = objectMap.get(objData.uuid);
+                if (obj) {
+                    obj.position.lerpVectors(objData.position, nextObjData.position, t);
+                    obj.rotation.copy(
+                        new THREE.Euler().setFromQuaternion(
+                            new THREE.Quaternion().slerp(
+                                new THREE.Quaternion().setFromEuler(objData.rotation),
+                                new THREE.Quaternion().setFromEuler(nextObjData.rotation),
+                                t
+                            )
+                        )
+                    );
+                    obj.scale.lerpVectors(objData.scale, nextObjData.scale, t);
+                    
+                    if (obj.userData.body) {
+                        obj.userData.body.position.copy(obj.position);
+                        obj.userData.body.quaternion.copy(
+                            new THREE.Quaternion().setFromEuler(obj.rotation)
+                        );
+                    }
+                }
+            }
+        });
+    }
+
+    // ====================
+    // FILE HANDLING
+    // ====================
+    function handleFileDrop(files) {
+        if (files.length === 0) return;
+        
+        const file = files[0];
+        if (!file.name.match(/\.(gltf|glb)$/i)) {
+            showError('Only GLTF/GLB files are supported');
+            return;
+        }
+        
+        const loader = new THREE.GLTFLoader();
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+            loader.parse(event.target.result, '', (gltf) => {
+                gltf.scene.traverse(child => {
+                    if (child.isMesh) {
+                        child.castShadow = DoppleitConfig.shadows;
+                        child.receiveShadow = DoppleitConfig.shadows;
+                        
+                        if (physicsEnabled) {
+                            addPhysicsBody(child, 'box'); // Default to box physics for imported models
+                        }
+                    }
+                });
+                
+                scene.add(gltf.scene);
+                addToOutliner(gltf.scene);
+                selectObject(gltf.scene);
+                saveState();
+                
+                DoppleitAPI.trigger('file.imported', gltf);
+            }, (error) => {
+                showError(`Error loading model: ${error.message}`);
+            });
+        };
+        
+        reader.readAsArrayBuffer(file);
+    }
+
+    // ====================
+    // UNDO/REDO SYSTEM
+    // ====================
+    function saveState() {
+        if (isUndoingRedoing) return;
+        
+        const state = {
+            objects: scene.children.map(obj => {
+                if (obj.isMesh) {
+                    return {
+                        uuid: obj.uuid,
+                        position: obj.position.clone(),
+                        rotation: obj.rotation.clone(),
+                        scale: obj.scale.clone(),
+                        material: obj.material.clone(),
+                        visible: obj.visible,
+                        castShadow: obj.castShadow,
+                        receiveShadow: obj.receiveShadow
+                    };
+                }
+                return null;
+            }).filter(obj => obj !== null),
+            keyframes: JSON.parse(JSON.stringify(keyframes)) // Deep clone
+        };
+        
+        undoStack.push(state);
+        redoStack = []; // Clear redo stack when new action is performed
+    }
+
+    function undo() {
+        if (undoStack.length === 0) return;
+        
+        isUndoingRedoing = true;
+        const state = undoStack.pop();
+        redoStack.push(getCurrentState());
+        applyState(state);
+        isUndoingRedoing = false;
+    }
+
+    function redo() {
+        if (redoStack.length === 0) return;
+        
+        isUndoingRedoing = true;
+        const state = redoStack.pop();
+        undoStack.push(getCurrentState());
+        applyState(state);
+        isUndoingRedoing = false;
+    }
+
+    function getCurrentState() {
+        return {
+            objects: scene.children.map(obj => {
+                if (obj.isMesh) {
+                    return {
+                        uuid: obj.uuid,
+                        position: obj.position.clone(),
+                        rotation: obj.rotation.clone(),
+                        scale: obj.scale.clone(),
+                        material: obj.material.clone(),
+                        visible: obj.visible,
+                        castShadow: obj.castShadow,
+                        receiveShadow: obj.receiveShadow
+                    };
+                }
+                return null;
+            }).filter(obj => obj !== null),
+            keyframes: JSON.parse(JSON.stringify(keyframes))
+        };
+    }
+
+    function applyState(state) {
+        // Clear current scene
+        scene.children.forEach(child => {
+            if (child.isMesh) {
+                if (child.userData.body) {
+                    world.removeBody(child.userData.body);
+                }
+                scene.remove(child);
+            }
+        });
+        
+        // Rebuild scene from state
+        state.objects.forEach(objState => {
+            let geometry;
+            
+            // This is simplified - in a real app you'd want to properly reconstruct the geometry
+            if (objState.material.name.includes('BoxGeometry')) {
+                geometry = new THREE.BoxGeometry(1, 1, 1);
+            } else if (objState.material.name.includes('SphereGeometry')) {
+                geometry = new THREE.SphereGeometry(0.5);
+            } else {
+                geometry = new THREE.BoxGeometry(1, 1, 1);
+            }
+            
+            const material = new THREE.MeshStandardMaterial({
+                color: objState.material.color,
+                roughness: objState.material.roughness,
+                metalness: objState.material.metalness
+            });
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(objState.position);
+            mesh.rotation.copy(objState.rotation);
+            mesh.scale.copy(objState.scale);
+            mesh.visible = objState.visible;
+            mesh.castShadow = objState.castShadow;
+            mesh.receiveShadow = objState.receiveShadow;
+            
+            if (physicsEnabled) {
+                addPhysicsBody(mesh, 'box'); // Simplified - would need to store physics type in state
+            }
+            
+            scene.add(mesh);
+            objectMap.set(mesh.uuid, mesh);
+        });
+        
+        // Restore keyframes
+        keyframes = JSON.parse(JSON.stringify(state.keyframes));
+        updateKeyframeList();
+        
+        // Rebuild outliner
+        outlinerList.innerHTML = '';
+        scene.children.forEach(child => {
+            if (child.isMesh) {
+                addToOutliner(child);
+            }
+        });
+        
+        deselectAll();
+    }
+
+    // ====================
+    // UTILITY FUNCTIONS
+    // ====================
+    function showError(message) {
+        const errorElement = document.getElementById('error-message');
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+        
+        setTimeout(() => {
+            errorElement.classList.remove('show');
+        }, 5000);
+    }
+
+    // Initialize the application
+    init();
+</script>
 </body>
 </html>
