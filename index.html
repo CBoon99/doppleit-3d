@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doppleit 3D Pro</title>
     <style>
+        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -20,6 +21,7 @@
             flex-direction: column;
             gap: 24px;
             overflow-x: hidden;
+            transition: background 0.3s, color 0.3s ease; /* For theme transitions */
         }
         body.dark {
             background: linear-gradient(135deg, #1A1E2E 0%, #2A2D4A 100%);
@@ -28,12 +30,6 @@
         .logo-container {
             text-align: center;
             margin-bottom: 12px;
-        }
-        #logo {
-            max-width: 300px;
-            width: 100%;
-            animation: glitch 0.8s ease-in-out;
-            box-shadow: 0 0 8px rgba(160, 132, 202, 0.5);
         }
         h1 {
             font-size: 2.25rem;
@@ -63,7 +59,7 @@
             color: #1A1E2E;
             font-size: 1rem;
             font-weight: 500;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, background 0.3s, color 0.3s ease;
         }
         body.dark #loading {
             background: rgba(255, 255, 255, 0.1);
@@ -97,6 +93,7 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: background 0.3s, border-color 0.3s, color 0.3s ease;
         }
         body.dark aside {
             background: rgba(255, 255, 255, 0.1);
@@ -109,6 +106,11 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: background 0.3s, border-color 0.3s, color 0.3s ease;
+        }
+        body.dark .section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         .controls {
             display: flex;
@@ -116,7 +118,7 @@
             gap: 12px;
             align-items: center;
         }
-        button, select, input[type="checkbox"] + label, input[type="number"], input[type="color"] {
+        button, select, input[type="checkbox"] + label, input[type="number"], input[type="color"], input[type="range"] {
             background: linear-gradient(135deg, #A084CA, #6B728E);
             border: none;
             border-radius: 8px;
@@ -125,16 +127,20 @@
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease, background 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 12px rgba(107, 115, 255, 0.3);
         }
         body.dark button,
         body.dark select,
         body.dark input[type="checkbox"] + label,
         body.dark input[type="number"],
-        body.dark input[type="color"] {
+        body.dark input[type="color"],
+        body.dark input[type="range"] {
             background: linear-gradient(135deg, #8A6CB4, #5A6373);
             box-shadow: 0 4px 8px rgba(107, 115, 255, 0.2);
+        }
+        button:hover, select:hover, input[type="checkbox"] + label:hover, input[type="number"]:hover, input[type="color"]:hover, input[type="range"]:hover {
+            opacity: 0.9;
         }
         input[type="checkbox"] {
             display: none;
@@ -154,6 +160,8 @@
             border-radius: 8px;
             min-height: 400px;
             position: relative;
+            overflow: hidden; /* To contain the viewport gizmo */
+            transition: background 0.3s ease;
         }
         body.dark .canvas-container {
             background: linear-gradient(135deg, rgba(138, 108, 180, 0.2), rgba(90, 99, 115, 0.3));
@@ -162,6 +170,7 @@
             width: 100%;
             height: 100%;
             border-radius: 8px;
+            display: block; /* Prevents extra space below canvas */
         }
         .keyframe-list {
             max-height: 150px;
@@ -169,6 +178,7 @@
             padding: 8px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         body.dark .keyframe-list {
             background: rgba(255, 255, 255, 0.05);
@@ -177,7 +187,7 @@
             padding: 8px;
             border-radius: 4px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         .keyframe-item:hover {
             background: rgba(160, 132, 202, 0.3);
@@ -202,15 +212,15 @@
             font-size: 12px;
             z-index: 1000;
         }
-        .gizmo-container {
+        #viewport-gizmo {
             position: absolute;
-            top: 100px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             z-index: 100;
         }
         #asset-library {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
             gap: 8px;
             max-height: 200px;
             overflow-y: auto;
@@ -226,9 +236,14 @@
             align-items: center;
             justify-content: center;
             font-size: 12px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .asset-thumb:hover {
+            opacity: 0.8;
         }
         body.dark .asset-thumb {
             background: #333;
+            color: #eee;
         }
         #drop-zone {
             border: 2px dashed #A084CA;
@@ -236,16 +251,179 @@
             padding: 20px;
             text-align: center;
             margin-top: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease, border-color 0.3s, background 0.3s, color 0.3s ease;
         }
         body.dark #drop-zone {
             border-color: #8A6CB4;
+            color: #eee;
         }
         #drop-zone.active {
             background: rgba(160, 132, 202, 0.2);
         }
         body.dark #drop-zone.active {
             background: rgba(138, 108, 180, 0.2);
+        }
+        #timeline-scrubber {
+            width: 100%;
+            margin-top: 10px;
+        }
+        /* ========== NEW UI STYLES ========== */
+        .plugin-panel {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            transition: background 0.3s, color 0.3s ease;
+        }
+        body.dark .plugin-panel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #eee;
+        }
+        .shader-editor {
+            height: 200px;
+            width: 100%;
+            font-family: monospace;
+            background-color: rgba(0, 0, 0, 0.1);
+            color: #eee;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 8px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s ease;
+        }
+        body.dark .shader-editor {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .constraint-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .ai-console, .code-sandbox {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: background 0.3s, border-color 0.3s, color 0.3s ease;
+        }
+        body.dark .ai-console, body.dark .code-sandbox {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #eee;
+        }
+        .ai-console {
+            position: fixed;
+            bottom: 60px;
+            left: 20px;
+            width: 300px;
+        }
+        .code-sandbox {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            height: 200px;
+        }
+        #ai-suggestions div {
+            padding: 5px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4
+px;
+            margin-top: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        #ai-suggestions div:hover {
+            background: rgba(160, 132, 202, 0.3);
+        }
+        body.dark #ai-suggestions div:hover {
+            background: rgba(138, 108, 180, 0.3);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 128, 0, 0.8);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .notification.error {
+            background: rgba(255, 99, 71, 0.9);
+        }
+        .outliner-item {
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .outliner-item:hover {
+            background: rgba(160, 132, 202, 0.2);
+        }
+        body.dark .outliner-item:hover {
+            background: rgba(138, 108, 180, 0.2);
+        }
+        .outliner-item.selected {
+            background: rgba(160, 132, 202, 0.5);
+            font-weight: bold;
+        }
+        body.dark .outliner-item.selected {
+            background: rgba(138, 108, 180, 0.5);
+            color: #eee;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 10px;
+            width: calc(50% - 6px); /* For two-column layout in controls */
+        }
+        .control-group label {
+            font-size: 0.85rem;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+        body.dark .control-group label {
+            color: #ccc;
+        }
+        /* Add more theme-specific styles here if needed */
+        body.ocean {
+            background: linear-gradient(135deg, #a7d9ed 0%, #6cbfe7 100%);
+            color: #1c3144;
+        }
+        body.ocean.dark {
+            background: linear-gradient(135deg, #1c3144 0%, #29475b 100%);
+            color: #a7d9ed;
+        }
+        body.sunset {
+            background: linear-gradient(135deg, #ffdd94 0%, #ffac89 100%);
+            color: #5e463b;
+        }
+        body.sunset.dark {
+            background: linear-gradient(135deg, #5e463b 0%, #7a594a 100%);
+            color: #ffdd94;
+        }
+        body.ocean button, body.ocean select, body.ocean input[type="checkbox"] + label, body.ocean input[type="number"], body.ocean input[type="color"], body.ocean input[type="range"] {
+            background: linear-gradient(135deg, #6cbfe7, #4386a1);
+            box-shadow: 0 4px 8px rgba(67, 134, 161, 0.3);
+        }
+        body.ocean.dark button, body.ocean.dark select, body.ocean.dark input[type="checkbox"] + label, body.ocean.dark input[type="number"], body.ocean.dark input[type="color"], body.ocean.dark input[type="range"] {
+            background: linear-gradient(135deg, #4386a1, #2e5b6d);
+            box-shadow: 0 4px 8px rgba(46, 91, 109, 0.2);
+        }
+        body.sunset button, body.sunset select, body.sunset input[type="checkbox"] + label, body.sunset input[type="number"], body.sunset input[type="color"], body.sunset input[type="range"] {
+            background: linear-gradient(135deg, #ffac89, #d17a62);
+            box-shadow: 0 4px 8px rgba(209, 122, 98, 0.3);
+        }
+        body.sunset.dark button, body.sunset.dark select, body.sunset.dark input[type="checkbox"] + label, body.sunset.dark input[type="number"], body.sunset.dark input[type="color"], body.sunset.dark input[type="range"] {
+            background: linear-gradient(135deg, #d17a62, #a35541);
+            box-shadow: 0 4px 8px rgba(163, 85, 65, 0.2);
         }
     </style>
 </head>
@@ -269,6 +447,20 @@
             </div>
         </aside>
 
+        <aside id="scene-settings">
+            <h2>Scene Settings</h2>
+            <div id="scene-settings-content" class="controls">
+                <div class="control-group">
+                    <label for="background-color">Background Color</label>
+                    <input type="color" id="background-color" value="#f0f0f0">
+                </div>
+                <div class="control-group">
+                    <label for="light-intensity">Light Intensity</label>
+                    <input type="number" id="light-intensity" value="0.8" min="0" max="2" step="0.1">
+                </div>
+            </div>
+        </aside>
+
         <div class="section" id="toolbar">
             <h2>Toolbar</h2>
             <div class="controls">
@@ -278,6 +470,25 @@
                 <button id="doppleit-tool-scale">Scale</button>
                 <button id="doppleit-physics-toggle">Physics: Off</button>
                 <button id="doppleit-snap-toggle">Snap: Off</button>
+                <button id="export-scene">Export Scene</button>
+                <button id="save-scene">Save Scene</button>
+                <button id="load-scene">Load Scene</button>
+                <button id="import-scene">Import Scene</button>
+                <button id="cloud-save">Save to Cloud</button>
+                <button id="cloud-load">Load from Cloud</button>
+                <select id="theme-select">
+                    <option value="default">Default Theme</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="sunset">Sunset</option>
+                </select>
+                <button id="dark-mode-toggle" aria-label="Toggle dark mode">Dark Mode: Off</button>
+                <select id="animation-clip-select">
+                    <option value="">-- Select Animation --</option>
+                </select>
+                <button id="play-animation">Play</button>
+                <button id="pause-animation">Pause</button>
+                <label for="animation-speed">Speed:</label>
+                <input type="number" id="animation-speed" value="1" min="0.1" max="2" step="0.1">
             </div>
         </div>
 
@@ -293,1101 +504,1137 @@
             </div>
         </div>
 
-        <div class="section" id="scene">
-            <h2>Scene</h2>
-            <div class="canvas-container">
-                <canvas id="doppleit-three-canvas"></canvas>
+        <div class="section" id="animation-timeline">
+            <h2>Animation Timeline</h2>
+            <div class="controls">
+                <label for="keyframe-time">Time:</label>
+                <input type="number" id="keyframe-time" value="0" min="0" step="0.1">
+                <button id="add-keyframe">Add Keyframe</button>
+                <button id="delete-keyframe">Delete Keyframe</button>
+            </div>
+            <input type="range" id="timeline-scrubber" value="0" min="0" step="0.01">
+            <div class="keyframe-list" id="keyframe-list">
             </div>
         </div>
 
-        <div class="section" id="timeline">
-            <h2>Timeline</h2>
-            <div class="controls">
-                <button id="doppleit-play-pause">Play</button>
-                <button id="doppleit-stop" disabled>Stop</button>
-                <button id="add-keyframe">Add Keyframe</button>
-                <input type="number" id="keyframe-time" min="0" step="0.1" value="0">
-            </div>
-            <div class="keyframe-list" id="keyframe-list"></div>
+        <div class="canvas-container">
+            <canvas id="doppleit-canvas"></canvas>
+            <div id="viewport-gizmo"></div>
         </div>
+
+        <aside id="performance-panel">
+            <div id="fps-display">FPS: 0</div>
+            <div id="memory-display">Memory: 0 MB</div>
+        </aside>
+
+        <aside class="plugin-panel">
+            <h2>Custom Plugin</h2>
+            <button>Trigger Action</button>
+        </aside>
+
+        <aside class="plugin-panel">
+            <h2>Shader Editor (Example)</h2>
+            <textarea class="shader-editor" placeholder="Enter GLSL code..."></textarea>
+        </aside>
+
+        <aside class="plugin-panel">
+            <h2>Constraint Controls (Example)</h2>
+            <div class="constraint-controls">
+                <label>Target Object:</label>
+                <select id="constraint-target-select">
+                    <option value="">-- Select Target --</option>
+                </select>
+                <label>Constraint Type:</label>
+                <select id="constraint-type-select">
+                    <option value="lookAt">Look At</option>
+                    <option value="pointAt">Point At</option>
+                </select>
+                <button id="add-constraint">Add Constraint</button>
+            </div>
+        </aside>
+
+        <div class="ai-console">
+            <h3>AI Console (Example)</h3>
+            <div id="ai-suggestions">
+                <div>Suggest a complex shape</div>
+                <div>Animate the selected object to rotate</div>
+                <div>Apply a random material</div>
+            </div>
+            <input type="text" id="ai-input" placeholder="Ask the AI...">
+            <button id="ai-send">Send</button>
+        </div>
+
+        <div class="code-sandbox">
+            <h3>Code Sandbox (Example)</h3>
+            <textarea id="code-input" placeholder="Enter JavaScript code..."></textarea>
+            <button id="run-code">Run Code</button>
+            <pre id="code-output" style="white-space: pre-wrap; word-break: break-word;"></pre>
+        </div>
+
     </main>
 
-    <div id="performance-panel">
-        FPS: <span id="fps-counter">0</span> | 
-        Objects: <span id="obj-counter">0</span> | 
-        Memory: <span id="mem-counter">0MB</span>
-    </div>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+        import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
+        import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+        import * as CANNON from 'cannon-es';
+        import Stats from 'three/examples/jsm/libs/stats.module';
+        import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper';
+        import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'; // For more efficient GLTF loading
 
-    <div class="gizmo-container" id="transform-gizmo"></div>
+        // ========================= MODULE SCOPE START =========================
+        // In a larger project, these would be in separate .js files
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r165/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/controls/OrbitControls.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/controls/TransformControls.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three-gizmo@2.1.0/dist/three-gizmo.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/loaders/GLTFLoader.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/EffectComposer.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/RenderPass.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/ShaderPass.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/shaders/CopyShader.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/examples/js/postprocessing/UnrealBloomPass.min.js"></script>
-
-    <script>
-    // ====================
-    // CORE CONFIGURATION
-    // ====================
-    const DoppleitConfig = {
-        snap: {
-            translate: 0.5,
-            rotate: 15,
-            scale: 0.1
-        },
-        physics: {
-            gravity: { x: 0, y: -9.82, z: 0 },
-            allowSleep: true
-        },
-        postProcessing: {
-            bloom: {
-                strength: 1.5,
-                radius: 0.5,
-                threshold: 0
+        // --- SCENE MANAGER MODULE ---
+        class SceneManager {
+            constructor(canvas) {
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.z = 5;
+                this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.shadowMap.enabled = DoppleitConfig.shadows;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+                this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
+                this.transformControls.addEventListener('change', () => {
+                    if (this.selectedObject && physicsEnabled && this.selectedObject.cannonBody) {
+                        this.selectedObject.cannonBody.position.copy(this.selectedObject.position);
+                        this.selectedObject.cannonBody.quaternion.copy(this.selectedObject.quaternion);
+                    }
+                });
+                this.transformControls.addEventListener('dragging-changed', (event) => {
+                    this.orbitControls.enabled = !event.value;
+                });
+                this.scene.add(this.transformControls);
+                this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                this.directionalLight.position.set(5, 10, 5);
+                this.directionalLight.castShadow = DoppleitConfig.shadows;
+                this.directionalLight.shadow.mapSize.width = 1024;
+                this.directionalLight.shadow.mapSize.height = 1024;
+                this.scene.add(this.directionalLight);
+                this.ambientLight = new THREE.AmbientLight(0x404040);
+                this.scene.add(this.ambientLight);
+                this.gltfLoader = new GLTFLoader();
+                const dracoLoader = new DRACOLoader();
+                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); // Or your local path
+                this.gltfLoader.setDRACOLoader(dracoLoader);
+                this.objectMap = new Map();
+                this.selectedObject = null;
+                this.raycaster = new THREE.Raycaster();
+                this.pointer = new THREE.Vector2();
+                this.outlinerList = document.getElementById('object-list');
+                this.inspectorContent = document.getElementById('inspector-content');
+                this.constraintTargetSelect = document.getElementById('constraint-target-select');
+                this.sceneSettingsContent = document.getElementById('scene-settings-content');
             }
-        },
-        shadows: true
-    };
 
-    // ====================
-    // PLUGIN ARCHITECTURE
-    // ====================
-    const DoppleitAPI = {
-        plugins: new Map(),
-        
-        register: function(name, plugin) {
-            this.plugins.set(name, plugin);
-            if (plugin.init) plugin.init(this);
-            console.log(`Plugin registered: ${name}`);
-        },
-        
-        trigger: function(event, data) {
-            this.plugins.forEach(plugin => {
-                if (plugin.onEvent) plugin.onEvent(event, data);
-            });
-        },
-        
-        getConfig: function() {
-            return DoppleitConfig;
-        }
-    };
+addObjectToScene(object) {
+    this.scene.add(object);
+    this.objectMap.set(object.uuid, object);
+    this.addToOutliner(object);
+    this.updateConstraintTargets();
 
-    // ====================
-    // CORE SYSTEM
-    // ====================
-    let scene, camera, renderer, orbitControls, transformControls;
-    let selectedObject = null;
-    let selectedObjects = new Set();
-    let transformGroup = null;
-    let isPlaying = false;
-    let keyframes = [];
-    let currentKeyframeTime = 0;
-    let timelineInterval;
-    let isDarkMode = false;
-    let objectMap = new Map();
-    let gridHelper, ambientLight, directionalLight;
-    let world, physicsEnabled = false;
-    let composer, bloomPass;
-    let snapEnabled = false;
-    let undoStack = [], redoStack = [];
-    let isUndoingRedoing = false;
+    // ✅ Add physics body if enabled
+    if (this.physicsEngine && this.physicsEngine.enabled && object.isMesh) {
+        this.physicsEngine.addBody(object);
+    }
+}
 
-    // DOM Elements
-    const canvas = document.getElementById('doppleit-three-canvas');
-    const sceneContainer = document.querySelector('.canvas-container');
-    const outlinerList = document.getElementById('object-list');
-    const inspectorContent = document.getElementById('inspector-content');
-    const playPauseButton = document.getElementById('doppleit-play-pause');
-    const stopButton = document.getElementById('doppleit-stop');
-    const addKeyframeButton = document.getElementById('add-keyframe');
-    const keyframeTimeInput = document.getElementById('keyframe-time');
-    const keyframeList = document.getElementById('keyframe-list');
-    const selectToolButton = document.getElementById('doppleit-tool-select');
-    const translateToolButton = document.getElementById('doppleit-tool-translate');
-    const rotateToolButton = document.getElementById('doppleit-tool-rotate');
-    const scaleToolButton = document.getElementById('doppleit-tool-scale');
-    const physicsToggleButton = document.getElementById('doppleit-physics-toggle');
-    const snapToggleButton = document.getElementById('doppleit-snap-toggle');
-    const dropZone = document.getElementById('drop-zone');
-    const assetThumbs = document.querySelectorAll('.asset-thumb');
-    const body = document.body;
 
-    // ====================
-    // PERFORMANCE MONITOR
-    // ====================
-    class PerformanceMonitor {
-        constructor() {
-            this.fps = 0;
-            this.lastCalledTime = performance.now();
-            this.frameTimes = [];
-            this.memoryUsage = 0;
-            
-            setInterval(() => {
-                document.getElementById('fps-counter').textContent = this.fps.toFixed(1);
-                document.getElementById('obj-counter').textContent = scene ? scene.children.length : 0;
-                document.getElementById('mem-counter').textContent = this.memoryUsage.toFixed(1);
-                
-                if (this.frameTimes.length > 0) {
-                    const avgFrameTime = this.frameTimes.reduce((a, b) => a + b) / this.frameTimes.length;
-                    this.fps = 1000 / avgFrameTime;
-                    this.frameTimes = [];
+            }
+
+            removeObjectFromScene(object) {
+                this.scene.remove(object);
+                this.objectMap.delete(object.uuid);
+                this.removeFromOutliner(object);
+                this.updateConstraintTargets();
+            }
+
+            addToOutliner(object) {
+                const listItem = document.createElement('li');
+                listItem.textContent = object.name || object.type + ' (' + object.uuid.substring(0, 6) + ')';
+                listItem.classList.add('outliner-item');
+                listItem.dataset.uuid = object.uuid;
+                listItem.addEventListener('click', () => this.selectObjectByUuid(object.uuid));
+                this.outlinerList.appendChild(listItem);
+            }
+
+            removeFromOutliner(object) {
+                const listItem = this.outlinerList.querySelector(`[data-uuid="${object.uuid}"]`);
+                if (listItem) {
+                    this.outlinerList.removeChild(listItem);
                 }
-                
-                this.memoryUsage = (performance.memory && performance.memory.usedJSHeapSize) ? 
-                    performance.memory.usedJSHeapSize / (1024 * 1024) : 0;
-            }, 1000);
+            }
+
+            selectObjectByUuid(uuid) {
+                const object = this.scene.getObjectByUuid(uuid);
+                if (object) {
+                    this.selectObject(object);
+                }
+            }
+
+            selectObject(object) {
+                if (this.selectedObject) {
+                    const oldOutlineItem = this.outlinerList.querySelector(`[data-uuid="${this.selectedObject.uuid}"]`);
+                    if (oldOutlineItem) {
+                        oldOutlineItem.classList.remove('selected');
+                    }
+                }
+                this.selectedObject = object;
+                this.transformControls.attach(this.selectedObject);
+                updateInspector(this.selectedObject);
+                const newOutlineItem = this.outlinerList.querySelector(`[data-uuid="${this.selectedObject.uuid}"]`);
+                if (newOutlineItem) {
+                    newOutlineItem.classList.add('selected');
+                }
+            }
+
+            loadGLTFModel(url, onLoadCallback) {
+                this.gltfLoader.load(url, (gltf) => {
+                    const model = gltf.scene;
+                    model.traverse(function (child) {
+                        if (child.isMesh) {
+                            child.castShadow = DoppleitConfig.shadows;
+                            child.receiveShadow = DoppleitConfig.shadows;
+                        }
+                    });
+                    this.addObjectToScene(model);
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        onLoadCallback(gltf.animations);
+                    }
+                }, (xhr) => {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                }, (error) => {
+                    console.error('An error happened', error);
+                    showError('Failed to load model.');
+                });
+            }
+
+            createPrimitive(geometryType) {
+                let geometry;
+                switch (geometryType) {
+                    case 'box':
+                        geometry = new THREE.BoxGeometry(1, 1, 1);
+                        break;
+                    case 'sphere':
+                        geometry = new THREE.SphereGeometry(0.5, 32, 32);
+                        break;
+                    case 'cone':
+                        geometry = new THREE.ConeGeometry(0.5, 1, 32);
+                        break;
+                    case 'torus':
+                        geometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
+                        break;
+                    case 'plane':
+                        geometry = new THREE.PlaneGeometry(5, 5);
+                        geometry.rotateX(-Math.PI / 2);
+                        break;
+                    default:
+                        console.error('Unknown geometry type:', geometryType);
+                        return null;
+                }
+                const material = new THREE.MeshStandardMaterial({ color: Math.random() * 0xffffff, roughness: 0.7, metalness: 0.3 });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = DoppleitConfig.shadows;
+                mesh.receiveShadow = DoppleitConfig.shadows;
+                this.addObjectToScene(mesh);
+                return mesh;
+            }
+
+            clearScene() {
+                this.scene.traverse(obj => {
+                    if (obj.isMesh) {
+                        if (obj.geometry) obj.geometry.dispose();
+                        if (obj.material) {
+                            if (obj.material.map) obj.material.map.dispose();
+                            obj.material.dispose();
+                        }
+                    }
+                    if (obj.isLight) {
+                        // Lights don't have geometry or maps usually, but ensure disposal if custom
+                    }
+                    if (obj !== this.camera && obj !== this.directionalLight && obj !== this.ambientLight && obj !== this.transformControls) {
+                        this.scene.remove(obj);
+                        this.objectMap.delete(obj.uuid);
+                        this.removeFromOutliner(obj);
+                    }
+                });
+                this.selectedObject = null;
+                this.transformControls.detach();
+                this.updateConstraintTargets();
+            }
+
+            updateOutliner() {
+                this.outlinerList.innerHTML = '';
+                this.scene.children.forEach(object => {
+                    if (object.isMesh || object.isLight) {
+                        this.addToOutliner(object);
+                    }
+                });
+                if (this.selectedObject) {
+                    const newOutlineItem = this.outlinerList.querySelector(`[data-uuid="${this.selectedObject.uuid}"]`);
+                    if (newOutlineItem) {
+                        newOutlineItem.classList.add('selected');
+                    }
+                }
+            }
+
+            updateConstraintTargets() {
+                this.constraintTargetSelect.innerHTML = '<option value="">-- Select Target --</option>';
+                this.scene.children.forEach(object => {
+                    if (object.isMesh || object.isLight) {
+                        const option = document.createElement('option');
+                        option.value = object.uuid;
+                        option.textContent = object.name || object.type + ' (' + object.uuid.substring(0, 6) + ')';
+                        this.constraintTargetSelect.appendChild(option);
+                    }
+                });
+            }
+
+            setBackgroundColor(color) {
+                this.renderer.setClearColor(color);
+                this.scene.background = new THREE.Color(color);
+            }
+
+            setLightIntensity(intensity) {
+                this.directionalLight.intensity = intensity;
+            }
+
+            onPointerMove(event) {
+                this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+                this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                this.raycaster.setFromCamera(this.pointer, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.scene.children, false);
+                if (intersects.length > 0 && selectedTool === 'select' && !this.transformControls.dragging) {
+                    document.body.style.cursor = 'pointer';
+                } else {
+                    document.body.style.cursor = 'default';
+                }
+            }
+
+            onPointerDown(event) {
+                if (event.button !== 0) return;
+                this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+                this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                this.raycaster.setFromCamera(this.pointer, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.scene.children, false);
+                if (intersects.length > 0 && selectedTool === 'select') {
+                    this.selectObject(intersects[0].object);
+                    isDragging = true;
+                }
+            }
+
+            onPointerUp() {
+                isDragging = false;
+            }
+
+            resizeRenderer() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            render() {
+                this.renderer.render(this.scene, this.camera);
+            }
         }
 
-        update() {
-            const now = performance.now();
-            const delta = now - this.lastCalledTime;
-            this.lastCalledTime = now;
-            this.frameTimes.push(delta);
+        // --- PHYSICS ENGINE MODULE ---
+        class PhysicsEngine {
+            constructor() {
+                this.world = new CANNON.World();
+                this.world.gravity.set(0, -9.82, 0);
+                this.enabled = false;
+                this.bodies = new Map(); // Maps Three.js object UUID to Cannon.js body
+            }
+
+            enablePhysics(enabled = true) {
+                this.enabled = enabled;
+                document.getElementById('doppleit-physics-toggle').textContent = `Physics: ${this.enabled ? 'On' : 'Off'}`;
+                if (this.enabled) {
+                    sceneManager.objectMap.forEach(object => {
+                        if (object.isMesh && !this.bodies.has(object.uuid)) {
+                            this.addBody(object);
+                        }
+                    });
+                } else {
+                    this.clearPhysics();
+                }
+            }
+
+            addBody(object) {
+                if (!object.geometry || this.bodies.has(object.uuid)) return;
+
+                let shape;
+                const geometry = object.geometry;
+
+                if (geometry.isBoxGeometry) {
+                    shape = new CANNON.Box(new CANNON.Vec3(geometry.parameters.width / 2, geometry.parameters.height / 2, geometry.parameters.depth / 2));
+                } else if (geometry.isSphereGeometry) {
+                    shape = new CANNON.Sphere(geometry.parameters.radius);
+                } else if (geometry.isConeGeometry) {
+                    shape = new CANNON.Cylinder(0, geometry.parameters.radiusBottom, geometry.parameters.height, geometry.parameters.radialSegments);
+                    const quat = new CANNON.Quaternion();
+                    quat.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+                    shape.transformAllPoints(quat);
+                } else if (geometry.isTorusGeometry) {
+                    shape = new CANNON.Torus({
+                        radius: geometry.parameters.radius,
+                        tube: geometry.parameters.tube,
+                        radialSegments: geometry.parameters.radialSegments,
+                        tubularSegments: geometry.parameters.tubularSegments
+                    });
+                } else if (geometry.isPlaneGeometry) {
+                    shape = new CANNON.Plane();
+                }
+
+                if (shape) {
+                    const body = new CANNON.Body({
+                        mass: object.mass || 1, // You might want to add a mass property to your Three.js objects
+                        position: new CANNON.Vec3().copy(object.position),
+                        quaternion: new CANNON.Quaternion().copy(object.quaternion),
+                        shape: shape
+                    });
+                    this.world.addBody(body);
+                    this.bodies.set(object.uuid, body);
+                    object.cannonBody = body; // Attach the Cannon.js body to the Three.js object for easy access
+                }
+            }
+
+            updatePhysics(deltaTime) {
+                if (this.enabled) {
+                    this.world.step(1 / 60, deltaTime, 3); // Fixed time step
+                    sceneManager.objectMap.forEach(object => {
+                        if (object.cannonBody) {
+                            object.position.copy(object.cannonBody.position);
+                            object.quaternion.copy(object.cannonBody.quaternion);
+                        }
+                    });
+                }
+            }
+
+            clearPhysics() {
+                this.bodies.forEach(body => this.world.removeBody(body));
+                this.bodies.clear();
+                sceneManager.objectMap.forEach(object => {
+                    object.cannonBody = null;
+                });
+            }
         }
-    }
 
-    const perfMonitor = new PerformanceMonitor();
-    DoppleitAPI.register('PerformanceMonitor', perfMonitor);
+        // --- ANIMATION SYSTEM MODULE ---
+        class AnimationSystem {
+            constructor(scene) {
+                this.mixer = new THREE.AnimationMixer(scene);
+                this.clips = new Map();
+                this.currentAction = null;
+                this.speed = 1;
+                this.isPlaying = false;
+                this.animationClipSelect = document.getElementById('animation-clip-select');
+                this.playButton = document.getElementById('play-animation');
+                this.pauseButton = document.getElementById('pause-animation');
+                this.speedInput = document.getElementById('animation-speed');
+            }
 
-    // ====================
-    // TRANSFORM GIZMO
-    // ====================
-    class TransformGizmo {
-        constructor() {
-            this.gizmo = new TransformControlsGizmo(transformControls, {
-                size: 100,
-                padding: 10
+            loadAnimationClips(clips) {
+                clips.forEach(clip => {
+                    this.clips.set(clip.name, clip);
+                    const option = document.createElement('option');
+                    option.value = clip.name;
+                    option.textContent = clip.name;
+                    this.animationClipSelect.appendChild(option);
+                });
+            }
+
+            playAnimation(clipName) {
+                const clip = this.clips.get(clipName);
+                if (clip && sceneManager.selectedObject) {
+                    if (this.currentAction) {
+                        this.currentAction.stop();
+                    }
+                    this.currentAction = this.mixer.clipAction(clip, sceneManager.selectedObject);
+                    this.currentAction.play();
+                    this.isPlaying = true;
+                }
+            }
+
+            update(deltaTime) {
+                if (this.isPlaying && this.mixer) {
+                    this.mixer.update(deltaTime * this.speed);
+                }
+            }
+
+            setSpeed(speed) {
+                this.speed = speed;
+                if (this.currentAction) {
+                    this.currentAction.timeScale = this.speed;
+                }
+            }
+
+            pauseAnimation() {
+                if (this.currentAction) {
+                    this.currentAction.paused = true;
+                    this.isPlaying = false;
+                }
+            }
+
+            resumeAnimation() {
+                if (this.currentAction) {
+                    this.currentAction.paused = false;
+                    this.isPlaying = true;
+                }
+            }
+
+            stopAnimation() {
+                if (this.currentAction) {
+                    this.currentAction.stop();
+                    this.currentAction = null;
+                    this.isPlaying = false;
+                }
+            }
+        }
+
+        // --- KEYFRAME ANIMATION SYSTEM MODULE ---
+        class KeyframeAnimation {
+            constructor() {
+                this.timelineScrubber = document.getElementById('timeline-scrubber');
+                this.keyframeList = document.getElementById('keyframe-list');
+                this.keyframeTimeInput = document.getElementById('keyframe-time');
+                this.addKeyframeButton = document.getElementById('add-keyframe');
+                this.deleteKeyframeButton = document.getElementById('delete-keyframe');
+                this.keyframes = [];
+                this.currentKeyframeTime = 0;
+                this.selectedKeyframeIndex = -1;
+
+                this.timelineScrubber.addEventListener('input', () => {
+                    this.currentKeyframeTime = parseFloat(this.timelineScrubber.value);
+                    this.keyframeTimeInput.value = this.currentKeyframeTime.toFixed(2);
+                    this.updateSceneToKeyframe(this.currentKeyframeTime);
+                });
+
+                this.keyframeTimeInput.addEventListener('change', () => {
+                    this.currentKeyframeTime = parseFloat(this.keyframeTimeInput.value);
+                    this.timelineScrubber.value = this.currentKeyframeTime;
+                    this.updateSceneToKeyframe(this.currentKeyframeTime);
+                });
+
+                this.addKeyframeButton.addEventListener('click', () => {
+                    if (sceneManager.selectedObject) {
+                        this.addKeyframe(this.currentKeyframeTime, sceneManager.selectedObject.position.clone(), sceneManager.selectedObject.rotation.clone(), sceneManager.selectedObject.scale.clone());
+                    } else {
+                        showError('No object selected to add keyframe.');
+                    }
+                });
+
+                this.deleteKeyframeButton.addEventListener('click', () => {
+                    if (this.selectedKeyframeIndex !== -1) {
+                        this.deleteKeyframe(this.selectedKeyframeIndex);
+                        this.selectedKeyframeIndex = -1;
+                    } else {
+                        showError('No keyframe selected to delete.');
+                    }
+                });
+            }
+
+            addKeyframe(time, position, rotation, scale) {
+                const newKeyframe = { time, position, rotation, scale };
+                this.keyframes.push(newKeyframe);
+                this.keyframes.sort((a, b) => a.time - b.time);
+                this.updateKeyframeList();
+                this.updateTimelineRange();
+            }
+
+            deleteKeyframe(index) {
+                if (index >= 0 && index < this.keyframes.length) {
+                    this.keyframes.splice(index, 1);
+                    this.updateKeyframeList();
+                    this.updateTimelineRange();
+                }
+            }
+
+            updateKeyframeList() {
+                this.keyframeList.innerHTML = '';
+                this.keyframes.forEach((keyframe, index) => {
+                    const item = document.createElement('div');
+                    item.classList.add('keyframe-item');
+                    item.textContent = `Time: ${keyframe.time.toFixed(2)}`;
+                    item.addEventListener('click', () => {
+                        this.currentKeyframeTime = keyframe.time;
+                        this.timelineScrubber.value = this.currentKeyframeTime;
+                        this.keyframeTimeInput.value = this.currentKeyframeTime.toFixed(2);
+                        this.updateSceneToKeyframe(this.currentKeyframeTime);
+                        this.selectKeyframeItem(index);
+                        this.selectedKeyframeIndex = index;
+                    });
+                    this.keyframeList.appendChild(item);
+                });
+            }
+
+            selectKeyframeItem(index) {
+                const items = this.keyframeList.children;
+                for (let i = 0; i < items.length; i++) {
+                    items[i].classList.remove('selected');
+                }
+                if (index >= 0 && index < items.length) {
+                    items[index].classList.add('selected');
+                }
+            }
+
+            updateTimelineRange() {
+                if (this.keyframes.length > 0) {
+                    const maxTime = this.keyframes[this.keyframes.length - 1].time;
+                    this.timelineScrubber.max = maxTime;
+                } else {
+                    this.timelineScrubber.max = 0;
+                    this.timelineScrubber.value = 0;
+                    this.keyframeTimeInput.value = 0;
+                }
+            }
+
+            updateSceneToKeyframe(time) {
+                if (!sceneManager.selected
+Object) return;
+                if (this.keyframes.length === 0) return;
+
+                if (time <= this.keyframes[0].time) {
+                    this.applyKeyframe(sceneManager.selectedObject, this.keyframes[0]);
+                    return;
+                }
+                if (time >= this.keyframes[this.keyframes.length - 1].time) {
+                    this.applyKeyframe(sceneManager.selectedObject, this.keyframes[this.keyframes.length - 1]);
+                    return;
+                }
+
+                for (let i = 0; i < this.keyframes.length - 1; i++) {
+                    const prev = this.keyframes[i];
+                    const next = this.keyframes[i + 1];
+                    if (time >= prev.time && time <= next.time) {
+                        const t = (time - prev.time) / (next.time - prev.time);
+                        this.interpolate(sceneManager.selectedObject, prev, next, t);
+                        break;
+                    }
+                }
+            }
+
+            applyKeyframe(target, keyframe) {
+                target.position.copy(keyframe.position);
+                target.rotation.copy(keyframe.rotation);
+                target.scale.copy(keyframe.scale);
+            }
+
+            interpolate(target, prev, next, t) {
+                target.position.lerpVectors(prev.position, next.position, t);
+                THREE.Quaternion.slerp(prev.rotation, next.rotation, target.quaternion, t);
+                target.scale.lerpVectors(prev.scale, next.scale, t);
+            }
+        }
+
+        // --- UTILITY FUNCTIONS ---
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateInspector(object) {
+            inspectorContent.innerHTML = '';
+            if (!object) {
+                inspectorContent.innerHTML = '<p>Select an object to edit its properties.</p>';
+                return;
+            }
+
+            const addControl = (label, type, value, step, min, max, onChange) => {
+                const controlGroup = document.createElement('div');
+                controlGroup.classList.add('control-group');
+                const labelElement = document.createElement('label');
+                labelElement.textContent = label;
+                const input = document.createElement('input');
+                input.type = type;
+                input.value = value;
+                if (step !== undefined) input.step = step;
+                if (min !== undefined) input.min = min;
+                if (max !== undefined) input.max = max;
+                input.addEventListener('input', (event) => onChange(parseFloat(event.target.value)));
+                controlGroup.appendChild(labelElement);
+                controlGroup.appendChild(input);
+                inspectorContent.appendChild(controlGroup);
+            };
+
+            addControl('Name', 'text', object.name, undefined, undefined, undefined, (value) => object.name = value);
+            addControl('Position X', 'number', object.position.x, 0.1, undefined, undefined, (value) => object.position.x = value);
+            addControl('Position Y', 'number', object.position.y, 0.1, undefined, undefined, (value) => object.position.y = value);
+            addControl('Position Z', 'number', object.position.z, 0.1, undefined, undefined, (value) => object.position.z = value);
+            addControl('Rotation X', 'number', THREE.MathUtils.radToDeg(object.rotation.x).toFixed(2), 1, undefined, undefined, (value) => object.rotation.x = THREE.MathUtils.degToRad(value));
+            addControl('Rotation Y', 'number', THREE.MathUtils.radToDeg(object.rotation.y).toFixed(2), 1, undefined, undefined, (value) => object.rotation.y = THREE.MathUtils.degToRad(value));
+            addControl('Rotation Z', 'number', THREE.MathUtils.radToDeg(object.rotation.z).toFixed(2), 1, undefined, undefined, (value) => object.rotation.z = THREE.MathUtils.degToRad(value));
+            addControl('Scale X', 'number', object.scale.x, 0.1, 0.1, undefined, (value) => object.scale.x = value);
+            addControl('Scale Y', 'number', object.scale.y, 0.1, 0.1, undefined, (value) => object.scale.y = value);
+            addControl('Scale Z', 'number', object.scale.z, 0.1, 0.1, undefined, (value) => object.scale.z = value);
+
+            if (object.material) {
+                if (object.material.color) {
+                    addControl('Color', 'color', '#' + object.material.color.getHexString(), undefined, undefined, undefined, (value) => object.material.color.setStyle(value));
+                }
+                addControl('Roughness', 'number', object.material.roughness, 0.01, 0, 1, (value) => object.material.roughness = value);
+                addControl('Metalness', 'number', object.material.metalness, 0.01, 0, 1, (value) => object.material.metalness = value);
+                // Add more material properties as needed
+            }
+        }
+
+        function saveScene() {
+            const sceneData = {
+                objects: []
+            };
+            sceneManager.scene.children.forEach(object => {
+                if (object.isMesh || object.isLight) {
+                    const objectData = {
+                        type: object.type,
+                        name: object.name,
+                        uuid: object.uuid,
+                        position: object.position.toArray(),
+                        rotation: object.rotation.toArray(),
+                        scale: object.scale.toArray(),
+                        matrixWorld: object.matrixWorld.toArray(),
+                        geometry: object.geometry ? object.geometry.type : null,
+                        material: object.material ? {
+                            type: object.material.type,
+                            color: object.material.color ? object.material.color.getHexString() : null,
+                            roughness: object.material.roughness,
+                            metalness: object.material.metalness,
+                            // Add more material properties as needed
+                        } : null,
+                        castShadow: object.castShadow,
+                        receiveShadow: object.receiveShadow,
+                        mass: object.mass // If you add a mass property
+                    };
+                    sceneData.objects.push(objectData);
+                }
             });
-            document.getElementById('transform-gizmo').appendChild(this.gizmo.domElement);
+            const jsonString = JSON.stringify(sceneData);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'doppleit_scene.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showNotification('Scene saved!');
         }
-    }
 
-    // ====================
-    // INITIALIZATION
-    // ====================
-    function init() {
-        // Initialize Three.js scene
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf0f0f0);
+        function loadSceneFromFile(file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const sceneData = JSON.parse(event.target.result);
+                    sceneManager.clearScene();
+                    sceneData.objects.forEach(data => {
+                        let geometry;
+                        if (data.geometry === 'BoxGeometry') {
+                            geometry = new THREE.BoxGeometry(1, 1, 1);
+                        } else if (data.geometry === 'SphereGeometry') {
+                            geometry = new THREE.SphereGeometry(0.5, 32, 32);
+                        } else if (data.geometry === 'ConeGeometry') {
+                            geometry = new THREE.ConeGeometry(0.5, 1, 32);
+                        } else if (data.geometry === 'TorusGeometry') {
+                            geometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
+                        } else if (data.geometry === 'PlaneGeometry') {
+                            geometry = new THREE.PlaneGeometry(5, 5);
+                            geometry.rotateX(-Math.PI / 2);
+                        }
 
-        // Setup camera
-        camera = new THREE.PerspectiveCamera(
-            75, 
-            sceneContainer.clientWidth / sceneContainer.clientHeight, 
-            0.1, 
-            1000
-        );
-        camera.position.set(5, 5, 5);
-        camera.lookAt(0, 0, 0);
+                        let material;
+                        if (data.material) {
+                            if (data.material.type === 'MeshStandardMaterial') {
+                                material = new THREE.MeshStandardMaterial({
+                                    color: data.material.color ? '#' + data.material.color : 0xffffff,
+                                    roughness: data.material.roughness !== undefined ? data.material.roughness : 0.7,
+                                    metalness: data.material.metalness !== undefined ? data.material.metalness : 0.3
+                                });
+                            }
+                            // Add more material types as needed
+                        } else {
+                            material = new THREE.MeshStandardMaterial({ color: Math.random() * 0xffffff, roughness: 0.7, metalness: 0.3 });
+                        }
 
-        // Setup renderer
-        renderer = new THREE.WebGLRenderer({ 
-            canvas: canvas,
-            antialias: true 
+                        let object;
+                        if (geometry) {
+                            object = new THREE.Mesh(geometry, material);
+                        } else if (data.type === 'DirectionalLight') {
+                            object = new THREE.DirectionalLight(0xffffff, 0.8);
+                        } else if (data.type === 'AmbientLight') {
+                            object = new THREE.AmbientLight(0x404040);
+                        }
+
+                        if (object) {
+                            object.type = data.type;
+                            object.name = data.name;
+                            object.uuid = data.uuid;
+                            object.position.fromArray(data.position);
+                            object.rotation.fromArray(data.rotation);
+                            object.scale.fromArray(data.scale);
+                            object.castShadow = data.castShadow;
+                            object.receiveShadow = data.receiveShadow;
+                            object.mass = data.mass;
+                            sceneManager.addObjectToScene(object);
+                            if (physicsEnabled && object.isMesh) {
+                                physicsEngine.addBody(object);
+                            }
+                        }
+                    });
+                    showNotification('Scene loaded!');
+                } catch (error) {
+                    console.error('Error loading scene:', error);
+                    showError('Failed to load scene file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/json') {
+                loadSceneFromFile(file);
+            } else if (file && (file.name.endsWith('.gltf') || file.name.endsWith('.glb'))) {
+                sceneManager.loadGLTFModel(URL.createObjectURL(file), (animations) => {
+                    if (animations) {
+                        animationSystem.loadAnimationClips(animations);
+                    }
+                });
+            } else {
+                showError('Unsupported file type. Please upload .json, .gltf, or .glb files.');
+            }
+            // Reset the input to allow loading the same file again
+            event.target.value = '';
+        }
+
+        function showNotification(message, isError = false) {
+            const notificationDiv = document.createElement('div');
+            notificationDiv.classList.add('notification');
+            notificationDiv.textContent = message;
+            if (isError) {
+                notificationDiv.classList.add('error');
+            }
+            document.body.appendChild(notificationDiv);
+            setTimeout(() => {
+                notificationDiv.remove();
+            }, 3000);
+        }
+
+        // --- STATE MANAGEMENT (Basic Implementation) ---
+        class HistoryManager {
+            constructor(sceneManager, physicsEngine, keyframeAnimation) {
+                this.states = [];
+                this.currentIndex = -1;
+                this.sceneManager = sceneManager;
+                this.physicsEngine = physicsEngine;
+                this.keyframeAnimation = keyframeAnimation;
+            }
+
+            pushState() {
+                const sceneState = this.saveCurrentScene();
+                this.states = this.states.slice(0, this.currentIndex + 1);
+                this.states.push(sceneState);
+                this.currentIndex++;
+                console.log('State pushed:', this.currentIndex, this.states.length);
+            }
+
+            undo() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.loadState(this.states[this.currentIndex]);
+                    console.log('Undo:', this.currentIndex);
+                }
+            }
+
+            redo() {
+                if (this.currentIndex < this.states.length - 1) {
+                    this.currentIndex++;
+                    this.loadState(this.states[this.currentIndex]);
+                    console.log('Redo:', this.currentIndex);
+                }
+            }
+
+            saveCurrentScene() {
+                const sceneData = {
+                    objects: [],
+                    physics: this.physicsEngine.enabled,
+                    keyframeData: this.keyframeAnimation.keyframes.map(kf => ({ ...kf })) // Deep copy
+                };
+                this.sceneManager.scene.children.forEach(object => {
+                    if (object.isMesh || object.isLight) {
+                        const objectData = {
+                            type: object.type,
+                            name: object.name,
+                            uuid: object.uuid,
+                            position: object.position.toArray(),
+                            rotation: object.rotation.toArray(),
+                            scale: object.scale.toArray(),
+                            geometry: object.geometry ? object.geometry.type : null,
+                            material: object.material ? { ...object.material } : null, // Basic material copy
+                            castShadow: object.castShadow,
+                            receiveShadow: object.receiveShadow,
+                            mass: object.mass
+                        };
+                        sceneData.objects.push(objectData);
+                    }
+                });
+                return sceneData;
+            }
+
+            loadState(state) {
+                this.sceneManager.clearScene();
+                state.objects.forEach(data => {
+                    let geometry;
+                    if (data.geometry === 'BoxGeometry') {
+                        geometry = new THREE.BoxGeometry(1, 1, 1);
+                    } else if (data.geometry === 'SphereGeometry') {
+                        geometry = new THREE.SphereGeometry(0.5, 32, 32);
+                    } else if (data.geometry === 'ConeGeometry') {
+                        geometry = new THREE.ConeGeometry(0.5, 1, 32);
+                    } else if (data.geometry === 'TorusGeometry') {
+                        geometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
+                    } else if (data.geometry === 'PlaneGeometry') {
+                        geometry = new THREE.PlaneGeometry(5, 5);
+                        geometry.rotateX(-Math.PI / 2);
+                    }
+
+                    let material;
+                    if (data.material) {
+                        if (data.material.type === 'MeshStandardMaterial') {
+                            material = new THREE.MeshStandardMaterial({
+                                color: data.material.color,
+                                roughness: data.material.roughness,
+                                metalness: data.material.metalness
+                            });
+                        }
+                        // ... handle other material types
+                    } else {
+                        material = new THREE.MeshStandardMaterial({ color: Math.random() * 0xffffff, roughness: 0.7, metalness: 0.3 });
+                    }
+
+                    let object;
+                    if (geometry) {
+                        object = new THREE.Mesh(geometry, material);
+                    } else if (data.type === 'DirectionalLight') {
+                        object = new THREE.DirectionalLight(0xffffff, 0.8);
+                    } else if (data.type === 'AmbientLight') {
+                        object = new THREE.AmbientLight(0x404040);
+                    }
+
+                    if (object) {
+                        object.type = data.type;
+                        object.name = data.name;
+                        object.uuid = data.uuid;
+                        object.position.fromArray(data.position);
+                        object.rotation.fromArray(data.rotation);
+                        object.scale.fromArray(data.scale);
+                        object.castShadow = data.castShadow;
+                        object.receiveShadow = data.receiveShadow;
+                        object.mass = data.mass;
+                        this.sceneManager.addObjectToScene(object);
+                        if (state.physics && object.isMesh) {
+                            this.physicsEngine.addBody(object);
+                        }
+                    }
+                });
+                this.physicsEngine.enablePhysics(state.physics);
+                this.keyframeAnimation.keyframes = state.keyframeData.map(kf => ({ ...kf }));
+                this.keyframeAnimation.updateKeyframeList();
+                this.keyframeAnimation.updateTimelineRange();
+            }
+        }
+
+        // --- PERFORMANCE MONITORING ---
+        const stats = new Stats();
+        document.body.appendChild(stats.dom);
+        stats.dom.style.position = 'fixed';
+        stats.dom.style.top = 'auto';
+        stats.dom.style.bottom = '0';
+        stats.dom.style.left = '0';
+
+        const memoryDisplay = document.getElementById('memory-display');
+// --- VIEWPORT GIZMO ---
+        const viewHelper = new ViewHelper(sceneManager.camera, sceneManager.renderer.domElement);
+        document.getElementById('viewport-gizmo').appendChild(viewHelper.domElement);
+
+        // ========================== INITIALIZATION ==========================
+        const canvas = document.getElementById('doppleit-canvas');
+        const sceneManager = new SceneManager(canvas);
+        const physicsEngine = new PhysicsEngine();
+        const animationSystem = new AnimationSystem(sceneManager.scene);
+        const keyframeAnimation = new KeyframeAnimation();
+        const historyManager = new HistoryManager(sceneManager, physicsEngine, keyframeAnimation);
+
+        // --- CONFIGURATION ---
+        const DoppleitConfig = {
+            gridHelperSize: 10,
+            gridHelperDivisions: 10,
+            axesHelperSize: 5,
+            shadows: true,
+            snapDistance: 0.5
+        };
+
+        // --- HELPERS ---
+        const gridHelper = new THREE.GridHelper(DoppleitConfig.gridHelperSize, DoppleitConfig.gridHelperDivisions);
+        sceneManager.scene.add(gridHelper);
+        const axesHelper = new THREE.AxesHelper(DoppleitConfig.axesHelperSize);
+        sceneManager.scene.add(axesHelper);
+
+        let selectedTool = 'select';
+        let snapEnabled = false;
+        let isDragging = false;
+
+        // ========================== EVENT LISTENERS ==========================
+        window.addEventListener('resize', () => sceneManager.resizeRenderer());
+        canvas.addEventListener('pointermove', (event) => sceneManager.onPointerMove(event));
+        canvas.addEventListener('pointerdown', (event) => sceneManager.onPointerDown(event));
+        canvas.addEventListener('pointerup', () => sceneManager.onPointerUp());
+
+        document.getElementById('doppleit-tool-select').addEventListener('click', () => selectedTool = 'select');
+        document.getElementById('doppleit-tool-translate').addEventListener('click', () => { selectedTool = 'translate'; sceneManager.transformControls.setMode('translate'); });
+        document.getElementById('doppleit-tool-rotate').addEventListener('click', () => { selectedTool = 'rotate'; sceneManager.transformControls.setMode('rotate'); });
+        document.getElementById('doppleit-tool-scale').addEventListener('click', () => { selectedTool = 'scale'; sceneManager.transformControls.setMode('scale'); });
+
+        document.getElementById('doppleit-physics-toggle').addEventListener('click', () => physicsEngine.enablePhysics(!physicsEngine.enabled));
+        document.getElementById('doppleit-snap-toggle').addEventListener('click', () => {
+            snapEnabled = !snapEnabled;
+            document.getElementById('doppleit-snap-toggle').textContent = `Snap: ${snapEnabled ? 'On' : 'Off'}`;
         });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
-        renderer.shadowMap.enabled = DoppleitConfig.shadows;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // Setup controls
-        orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
-        orbitControls.enableDamping = true;
-        orbitControls.dampingFactor = 0.25;
-
-        transformControls = new THREE.TransformControls(camera, renderer.domElement);
-        transformControls.addEventListener('dragging-changed', (event) => {
-            orbitControls.enabled = !event.value;
-            if (!event.value && !isUndoingRedoing) {
-                saveState();
+        document.getElementById('asset-library').addEventListener('click', (event) => {
+            if (event.target.classList.contains('asset-thumb')) {
+                const geometryType = event.target.dataset.geometry;
+                sceneManager.createPrimitive(geometryType);
             }
         });
-        transformControls.addEventListener('objectChange', () => {
-            updateInspector();
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+        fileInput.addEventListener('change', handleFileUpload);
+
+        document.getElementById('import-scene').addEventListener('click', () => fileInput.click());
+
+        document.getElementById('save-scene').addEventListener('click', saveScene);
+
+        const loadFileInput = document.createElement('input');
+        loadFileInput.type = 'file';
+        loadFileInput.accept = 'application/json';
+        loadFileInput.style.display = 'none';
+        document.body.appendChild(loadFileInput);
+        loadFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                loadSceneFromFile(file);
+            }
+            event.target.value = ''; // Reset input
         });
-        scene.add(transformControls);
+        document.getElementById('load-scene').addEventListener('click', () => loadFileInput.click());
 
-        // Setup lights
-        ambientLight = new THREE.AmbientLight(0x404040);
-        scene.add(ambientLight);
+        document.getElementById('background-color').addEventListener('input', (event) => sceneManager.setBackgroundColor(event.target.value));
+        document.getElementById('light-intensity').addEventListener('input', (event) => sceneManager.setLightIntensity(parseFloat(event.target.value)));
 
-        directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 10, 7);
-        directionalLight.castShadow = DoppleitConfig.shadows;
-        directionalLight.shadow.mapSize.width = 1024;
-        directionalLight.shadow.mapSize.height = 1024;
-        scene.add(directionalLight);
+        document.getElementById('animation-clip-select').addEventListener('change', (event) => {
+            if (event.target.value) {
+                animationSystem.playAnimation(event.target.value);
+            } else {
+                animationSystem.stopAnimation();
+            }
+        });
+        document.getElementById('play-animation').addEventListener('click', () => animationSystem.resumeAnimation());
+        document.getElementById('pause-animation').addEventListener('click', () => animationSystem.pauseAnimation());
+        document.getElementById('animation-speed').addEventListener('input', (event) => animationSystem.setSpeed(parseFloat(event.target.value)));
 
-        // Setup grid helper
-        gridHelper = new THREE.GridHelper(20, 20, 0x888888, 0x888888);
-        scene.add(gridHelper);
-
-        // Setup physics world
-        world = new CANNON.World();
-        world.gravity.set(
-            DoppleitConfig.physics.gravity.x,
-            DoppleitConfig.physics.gravity.y,
-            DoppleitConfig.physics.gravity.z
-        );
-        world.broadphase = new CANNON.SAPBroadphase(world);
-        world.allowSleep = DoppleitConfig.physics.allowSleep;
-
-        // Setup post-processing
-        const renderScene = new THREE.RenderPass(scene, camera);
-        bloomPass = new THREE.UnrealBloomPass(
-            new THREE.Vector2(window.innerWidth, window.innerHeight),
-            DoppleitConfig.postProcessing.bloom.strength,
-            DoppleitConfig.postProcessing.bloom.radius,
-            DoppleitConfig.postProcessing.bloom.threshold
-        );
-
-        composer = new THREE.EffectComposer(renderer);
-        composer.addPass(renderScene);
-        composer.addPass(bloomPass);
-
-        // Initialize Gizmo
-        new TransformGizmo();
-
-        // Event listeners
-        window.addEventListener('resize', onWindowResize);
-        renderer.domElement.addEventListener('click', onCanvasClick);
-        renderer.domElement.addEventListener('mousedown', onCanvasMouseDown);
-        renderer.domElement.addEventListener('mouseup', onCanvasMouseUp);
-        document.addEventListener('keydown', onKeyDown);
-
-        // Tool buttons
-        selectToolButton.addEventListener('click', () => setTransformMode('select'));
-        translateToolButton.addEventListener('click', () => setTransformMode('translate'));
-        rotateToolButton.addEventListener('click', () => setTransformMode('rotate'));
-        scaleToolButton.addEventListener('click', () => setTransformMode('scale'));
-        physicsToggleButton.addEventListener('click', togglePhysics);
-        snapToggleButton.addEventListener('click', toggleSnap);
-        playPauseButton.addEventListener('click', togglePlayback);
-        stopButton.addEventListener('click', stopPlayback);
-        addKeyframeButton.addEventListener('click', addKeyframe);
-
-        // Drag and drop for assets
-        dropZone.addEventListener('dragover', (e) => {
+        document.getElementById('drop-zone').addEventListener('dragover', function(e) {
             e.preventDefault();
-            dropZone.classList.add('active');
+            this.classList.add('active');
         });
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('active');
+        document.getElementById('drop-zone').addEventListener('dragleave', function(e) {
+            this.classList.remove('active');
         });
 
-        dropZone.addEventListener('drop', (e) => {
+        document.getElementById('drop-zone').addEventListener('drop', function(e) {
             e.preventDefault();
-            dropZone.classList.remove('active');
-            handleFileDrop(e.dataTransfer.files);
+            this.classList.remove('active');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/json') {
+                loadSceneFromFile(file);
+            } else if (file && (file.name.endsWith('.gltf') || file.name.endsWith('.glb'))) {
+                sceneManager.loadGLTFModel(URL.createObjectURL(file), (animations) => {
+                    if (animations) {
+                        animationSystem.loadAnimationClips(animations);
+                    }
+                });
+            } else {
+                showError('Unsupported file type. Please upload .json, .gltf, or .glb files.');
+            }
         });
 
-        // Asset thumbnails
-        assetThumbs.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                createPrimitive(thumb.dataset.geometry);
-            });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'z' && event.ctrlKey && !event.shiftKey) {
+                historyManager.undo();
+            } else if (event.key === 'y' && event.ctrlKey || (event.key === 'z' && event.ctrlKey && event.shiftKey)) {
+                historyManager.redo();
+            } else if (event.key === 's' && event.ctrlKey) {
+                event.preventDefault();
+                saveScene();
+            }
+            // Add more keyboard shortcuts as needed
         });
 
-        // Hide loading screen
+        document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            document.getElementById('dark-mode-toggle').textContent = `Dark Mode: ${isDark ? 'On' : 'Off'}`;
+        });
+
+        document.getElementById('theme-select').addEventListener('change', (event) => {
+            document.body.className = event.target.value;
+            if (document.getElementById('dark-mode-toggle').textContent.includes('On')) {
+                document.body.classList.add('dark');
+            }
+        });
+
+        // Initial state push
+        historyManager.pushState();
+
+        // ========================== RENDER LOOP ==========================
+        let lastTime = 0;
+        function animate(time) {
+            const deltaTime = (time - lastTime) / 1000;
+            lastTime = time;
+
+            physicsEngine.updatePhysics(deltaTime);
+            animationSystem.update(deltaTime);
+            sceneManager.render();
+            stats.update();
+            viewHelper.update(deltaTime);
+
+            const memoryUsage = performance.memory ? performance.memory.usedJSHeapSize / performance.memory.totalJSHeapSize : 0;
+            memoryDisplay.textContent = `Memory: ${(memoryUsage * 100).toFixed(2)}%`; // Basic memory usage
+
+            requestAnimationFrame(animate);
+        }
+
+        // Hide loading screen after a small delay to ensure Three.js initializes
         setTimeout(() => {
             document.getElementById('loading').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('loading').style.display = 'none';
-            }, 300);
-        }, 500);
+            }, 500);
+        }, 1000);
 
-        // Start animation loop
-        animate();
-    }
+        animate(0);
 
-    // ====================
-    // CORE FUNCTIONS
-    // ====================
-    function animate() {
-        requestAnimationFrame(animate);
-        perfMonitor.update();
+        // ========================= MODULE SCOPE END =========================
 
-        // Update physics if enabled
-        if (physicsEnabled) {
-            world.step(1/60);
-            scene.children.forEach(obj => {
-                if (obj.userData.body) {
-                    obj.position.copy(obj.userData.body.position);
-                    obj.quaternion.copy(obj.userData.body.quaternion);
-                }
-            });
-        }
-
-        orbitControls.update();
-        composer.render();
-    }
-
-    function onWindowResize() {
-        camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
-        composer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
-    }
-
-    function onCanvasClick(event) {
-        event.preventDefault();
-
-        const mouse = new THREE.Vector2(
-            (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-            -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
-        );
-
-        const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, camera);
-
-        const intersects = raycaster.intersectObjects(scene.children, true);
-
-        if (intersects.length > 0) {
-            let object = intersects[0].object;
-            
-            // Find the top-most parent that's not the scene
-            while (object.parent && object.parent !== scene) {
-                object = object.parent;
-            }
-
-            selectObject(object);
-        } else {
-            deselectAll();
-        }
-    }
-
-    function onCanvasMouseDown(event) {
-        if (event.target === renderer.domElement && transformControls.dragging) {
-            orbitControls.enabled = false;
-        }
-    }
-
-    function onCanvasMouseUp() {
-        orbitControls.enabled = true;
-    }
-
-    function onKeyDown(event) {
-        if (event.key === 'Delete' || event.key === 'Backspace') {
-            deleteSelectedObjects();
-        }
-        
-        if (event.ctrlKey || event.metaKey) {
-            if (event.key === 'z' && !event.shiftKey) {
-                undo();
-            } else if (event.key === 'z' && event.shiftKey) {
-                redo();
-            } else if (event.key === 'y') {
-                redo();
-            }
-        }
-    }
-
-    // ====================
-    // OBJECT MANAGEMENT
-    // ====================
-    function createPrimitive(type, position = new THREE.Vector3(0, 0, 0)) {
-        let geometry, material, mesh;
-        
-        switch(type) {
-            case 'box':
-                geometry = new THREE.BoxGeometry(1, 1, 1);
-                break;
-            case 'sphere':
-                geometry = new THREE.SphereGeometry(0.5, 32, 32);
-                break;
-            case 'cone':
-                geometry = new THREE.ConeGeometry(0.5, 1, 32);
-                break;
-            case 'torus':
-                geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 32);
-                break;
-            case 'plane':
-                geometry = new THREE.PlaneGeometry(5, 5);
-                break;
-            default:
-                geometry = new THREE.BoxGeometry(1, 1, 1);
-        }
-
-        material = new THREE.MeshStandardMaterial({ 
-            color: new THREE.Color(Math.random() * 0xffffff),
-            roughness: 0.7,
-            metalness: 0.2
-        });
-
-        mesh = new THREE.Mesh(geometry, material);
-        mesh.position.copy(position);
-        mesh.castShadow = DoppleitConfig.shadows;
-        mesh.receiveShadow = DoppleitConfig.shadows;
-        
-        if (physicsEnabled) {
-            addPhysicsBody(mesh, type);
-        }
-
-        scene.add(mesh);
-        addToOutliner(mesh);
-        selectObject(mesh);
-        saveState();
-        
-        DoppleitAPI.trigger('object.created', mesh);
-        
-        return mesh;
-    }
-
-    function addPhysicsBody(mesh, type) {
-        let shape, mass = 1;
-        
-        switch(type) {
-            case 'box':
-                shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
-                break;
-            case 'sphere':
-                shape = new CANNON.Sphere(0.5);
-                break;
-            case 'cone':
-                shape = new CANNON.Cylinder(0.001, 0.5, 1, 8);
-                break;
-            case 'torus':
-                shape = new CANNON.Box(new CANNON.Vec3(0.7, 0.2, 0.7));
-                break;
-            case 'plane':
-                shape = new CANNON.Plane();
-                mass = 0;
-                break;
-            default:
-                shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
-        }
-
-        const body = new CANNON.Body({ mass, shape });
-        body.position.copy(mesh.position);
-        body.quaternion.copy(mesh.quaternion);
-        
-        if (type === 'cone') {
-            body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-        }
-        
-        world.addBody(body);
-        mesh.userData.body = body;
-        
-        DoppleitAPI.trigger('physics.bodyAdded', { mesh, body });
-    }
-
-    function selectObject(object) {
-        if (selectedObject === object) return;
-        
-        deselectAll();
-        
-        selectedObject = object;
-        selectedObjects.add(object);
-        
-        object.userData.originalMaterial = object.material;
-        object.material = object.material.clone();
-        object.material.emissive.setHex(0x444444);
-        
-        transformControls.attach(object);
-        transformControls.showX = true;
-        transformControls.showY = true;
-        transformControls.showZ = true;
-        
-        updateOutlinerSelection();
-        updateInspector();
-        
-        DoppleitAPI.trigger('object.selected', object);
-    }
-
-    function deselectAll() {
-        if (selectedObject) {
-            if (selectedObject.userData.originalMaterial) {
-                selectedObject.material = selectedObject.userData.originalMaterial;
-            }
-            
-            transformControls.detach();
-            
-            selectedObject = null;
-            selectedObjects.clear();
-            
-            updateOutlinerSelection();
-            updateInspector();
-            
-            DoppleitAPI.trigger('object.deselected');
-        }
-    }
-
-    function deleteSelectedObjects() {
-        if (selectedObjects.size === 0) return;
-        
-        selectedObjects.forEach(obj => {
-            if (obj.userData.body) {
-                world.removeBody(obj.userData.body);
-            }
-            
-            scene.remove(obj);
-            
-            const listItem = document.querySelector(`[data-uuid="${obj.uuid}"]`);
-            if (listItem) {
-                outlinerList.removeChild(listItem);
-            }
-            
-            DoppleitAPI.trigger('object.deleted', obj);
-        });
-        
-        deselectAll();
-        saveState();
-    }
-
-    // ====================
-    // OUTLINER & INSPECTOR
-    // ====================
-    function addToOutliner(object) {
-        const listItem = document.createElement('li');
-        listItem.textContent = object.name || `${object.geometry.type} (${object.uuid.slice(0, 8)})`;
-        listItem.dataset.uuid = object.uuid;
-        listItem.addEventListener('click', () => selectObject(object));
-        outlinerList.appendChild(listItem);
-        objectMap.set(object.uuid, object);
-    }
-
-    function updateOutlinerSelection() {
-        const items = outlinerList.querySelectorAll('li');
-        items.forEach(item => {
-            if (selectedObjects.has(objectMap.get(item.dataset.uuid))) {
-                item.classList.add('selected');
-            } else {
-                item.classList.remove('selected');
-            }
-        });
-    }
-
-    function updateInspector() {
-        if (!selectedObject) {
-            inspectorContent.innerHTML = '<p>Select an object to edit its properties.</p>';
-            return;
-        }
-
-        inspectorContent.innerHTML = `
-            <h3>${selectedObject.name || 'Object'}</h3>
-            <div class="control-group">
-                <label>Position</label>
-                <div class="vector-controls">
-                    <input type="number" class="vector-x" value="${selectedObject.position.x.toFixed(2)}" step="0.1">
-                    <input type="number" class="vector-y" value="${selectedObject.position.y.toFixed(2)}" step="0.1">
-                    <input type="number" class="vector-z" value="${selectedObject.position.z.toFixed(2)}" step="0.1">
-                </div>
-            </div>
-            <div class="control-group">
-                <label>Rotation</label>
-                <div class="vector-controls">
-                    <input type="number" class="vector-x" value="${THREE.MathUtils.radToDeg(selectedObject.rotation.x).toFixed(1)}" step="1">
-                    <input type="number" class="vector-y" value="${THREE.MathUtils.radToDeg(selectedObject.rotation.y).toFixed(1)}" step="1">
-                    <input type="number" class="vector-z" value="${THREE.MathUtils.radToDeg(selectedObject.rotation.z).toFixed(1)}" step="1">
-                </div>
-            </div>
-            <div class="control-group">
-                <label>Scale</label>
-                <div class="vector-controls">
-                    <input type="number" class="vector-x" value="${selectedObject.scale.x.toFixed(2)}" step="0.1">
-                    <input type="number" class="vector-y" value="${selectedObject.scale.y.toFixed(2)}" step="0.1">
-                    <input type="number" class="vector-z" value="${selectedObject.scale.z.toFixed(2)}" step="0.1">
-                </div>
-            </div>
-            <div class="control-group">
-                <label>Color</label>
-                <input type="color" value="#${selectedObject.material.color.getHexString()}">
-            </div>
-            <div class="control-group">
-                <label>Visible</label>
-                <input type="checkbox" id="visible-toggle" ${selectedObject.visible ? 'checked' : ''}>
-                <label for="visible-toggle">Visible</label>
-            </div>
-            <div class="control-group">
-                <label>Cast Shadow</label>
-                <input type="checkbox" id="cast-shadow-toggle" ${selectedObject.castShadow ? 'checked' : ''}>
-                <label for="cast-shadow-toggle">Cast Shadow</label>
-            </div>
-            <div class="control-group">
-                <label>Receive Shadow</label>
-                <input type="checkbox" id="receive-shadow-toggle" ${selectedObject.receiveShadow ? 'checked' : ''}>
-                <label for="receive-shadow-toggle">Receive Shadow</label>
-            </div>
-            <button id="delete-object">Delete Object</button>
-        `;
-
-        // Add event listeners to inspector controls
-        const positionInputs = inspectorContent.querySelectorAll('.control-group:nth-child(2) input');
-        positionInputs.forEach((input, index) => {
-            input.addEventListener('change', (e) => {
-                selectedObject.position.setComponent(index, parseFloat(e.target.value));
-                if (selectedObject.userData.body) {
-                    selectedObject.userData.body.position.copy(selectedObject.position);
-                }
-                saveState();
-            });
-        });
-
-        const rotationInputs = inspectorContent.querySelectorAll('.control-group:nth-child(3) input');
-        rotationInputs.forEach((input, index) => {
-            input.addEventListener('change', (e) => {
-                selectedObject.rotation.setComponent(index, THREE.MathUtils.degToRad(parseFloat(e.target.value)));
-                if (selectedObject.userData.body) {
-                    selectedObject.userData.body.quaternion.copy(selectedObject.quaternion);
-                }
-                saveState();
-            });
-        });
-
-        const scaleInputs = inspectorContent.querySelectorAll('.control-group:nth-child(4) input');
-        scaleInputs.forEach((input, index) => {
-            input.addEventListener('change', (e) => {
-                selectedObject.scale.setComponent(index, parseFloat(e.target.value));
-                saveState();
-            });
-        });
-
-        const colorInput = inspectorContent.querySelector('input[type="color"]');
-        colorInput.addEventListener('change', (e) => {
-            selectedObject.material.color.setHex(parseInt(e.target.value.replace('#', ''), 16));
-            saveState();
-        });
-
-        const visibleToggle = inspectorContent.querySelector('#visible-toggle');
-        visibleToggle.addEventListener('change', (e) => {
-            selectedObject.visible = e.target.checked;
-            saveState();
-        });
-
-        const castShadowToggle = inspectorContent.querySelector('#cast-shadow-toggle');
-        castShadowToggle.addEventListener('change', (e) => {
-            selectedObject.castShadow = e.target.checked;
-            saveState();
-        });
-
-        const receiveShadowToggle = inspectorContent.querySelector('#receive-shadow-toggle');
-        receiveShadowToggle.addEventListener('change', (e) => {
-            selectedObject.receiveShadow = e.target.checked;
-            saveState();
-        });
-
-        const deleteButton = inspectorContent.querySelector('#delete-object');
-        deleteButton.addEventListener('click', deleteSelectedObjects);
-    }
-
-    // ====================
-    // TRANSFORM CONTROLS
-    // ====================
-    function setTransformMode(mode) {
-        transformControls.setMode(mode);
-        
-        // Update button states
-        selectToolButton.classList.toggle('active', mode === 'select');
-        translateToolButton.classList.toggle('active', mode === 'translate');
-        rotateToolButton.classList.toggle('active', mode === 'rotate');
-        scaleToolButton.classList.toggle('active', mode === 'scale');
-        
-        if (mode === 'select') {
-            transformControls.detach();
-        } else if (selectedObject) {
-            transformControls.attach(selectedObject);
-        }
-    }
-
-    function toggleSnap() {
-        snapEnabled = !snapEnabled;
-        snapToggleButton.textContent = `Snap: ${snapEnabled ? 'On' : 'Off'}`;
-        
-        if (snapEnabled) {
-            transformControls.setTranslationSnap(DoppleitConfig.snap.translate);
-            transformControls.setRotationSnap(THREE.MathUtils.degToRad(DoppleitConfig.snap.rotate));
-            transformControls.setScaleSnap(DoppleitConfig.snap.scale);
-        } else {
-            transformControls.setTranslationSnap(null);
-            transformControls.setRotationSnap(null);
-            transformControls.setScaleSnap(null);
-        }
-    }
-
-    // ====================
-    // PHYSICS
-    // ====================
-    function togglePhysics() {
-        physicsEnabled = !physicsEnabled;
-        physicsToggleButton.textContent = `Physics: ${physicsEnabled ? 'On' : 'Off'}`;
-        
-        if (physicsEnabled) {
-            // Add physics bodies to all existing objects
-            scene.children.forEach(obj => {
-                if (obj.isMesh && !obj.userData.body) {
-                    let type = 'box';
-                    if (obj.geometry instanceof THREE.SphereGeometry) type = 'sphere';
-                    else if (obj.geometry instanceof THREE.ConeGeometry) type = 'cone';
-                    else if (obj.geometry instanceof THREE.TorusGeometry) type = 'torus';
-                    else if (obj.geometry instanceof THREE.PlaneGeometry) type = 'plane';
-                    
-                    addPhysicsBody(obj, type);
-                }
-            });
-        } else {
-            // Remove all physics bodies
-            scene.children.forEach(obj => {
-                if (obj.userData.body) {
-                    world.removeBody(obj.userData.body);
-                    delete obj.userData.body;
-                }
-            });
-        }
-    }
-
-    // ====================
-    // TIMELINE & KEYFRAMES
-    // ====================
-    function togglePlayback() {
-        isPlaying = !isPlaying;
-        playPauseButton.textContent = isPlaying ? 'Pause' : 'Play';
-        stopButton.disabled = isPlaying ? false : true;
-        
-        if (isPlaying) {
-            timelineInterval = setInterval(() => {
-                currentKeyframeTime += 0.1;
-                keyframeTimeInput.value = currentKeyframeTime.toFixed(1);
-                updateSceneToKeyframe(currentKeyframeTime);
-            }, 100);
-        } else {
-            clearInterval(timelineInterval);
-        }
-    }
-
-    function stopPlayback() {
-        isPlaying = false;
-        playPauseButton.textContent = 'Play';
-        stopButton.disabled = true;
-        clearInterval(timelineInterval);
-        currentKeyframeTime = 0;
-        keyframeTimeInput.value = '0';
-        updateSceneToKeyframe(0);
-    }
-
-    function addKeyframe() {
-        const time = parseFloat(keyframeTimeInput.value);
-        if (isNaN(time)) return;
-        
-        const keyframe = {
-            time,
-            objects: []
-        };
-        
-        scene.children.forEach(obj => {
-            if (obj.isMesh) {
-                keyframe.objects.push({
-                    uuid: obj.uuid,
-                    position: obj.position.clone(),
-                    rotation: obj.rotation.clone(),
-                    scale: obj.scale.clone()
-                });
-            }
-        });
-        
-        // Remove any existing keyframe at this time
-        keyframes = keyframes.filter(k => k.time !== time);
-        keyframes.push(keyframe);
-        keyframes.sort((a, b) => a.time - b.time);
-        
-        updateKeyframeList();
-        saveState();
-    }
-
-    function updateKeyframeList() {
-        keyframeList.innerHTML = '';
-        keyframes.forEach((keyframe, index) => {
-            const item = document.createElement('div');
-            item.className = 'keyframe-item';
-            item.textContent = `Keyframe at ${keyframe.time.toFixed(1)}s`;
-            item.addEventListener('click', () => {
-                currentKeyframeTime = keyframe.time;
-                keyframeTimeInput.value = keyframe.time.toFixed(1);
-                updateSceneToKeyframe(keyframe.time);
-            });
-            keyframeList.appendChild(item);
-        });
-    }
-
-    function updateSceneToKeyframe(time) {
-        // Find the two closest keyframes
-        let prevKeyframe = null;
-        let nextKeyframe = null;
-        
-        for (const keyframe of keyframes) {
-            if (keyframe.time <= time) {
-                prevKeyframe = keyframe;
-            } else {
-                nextKeyframe = keyframe;
-                break;
-            }
-        }
-        
-        if (!prevKeyframe && !nextKeyframe) return;
-        
-        if (prevKeyframe && !nextKeyframe) {
-            // Only previous keyframe exists - set to that
-            applyKeyframe(prevKeyframe);
-        } else if (!prevKeyframe && nextKeyframe) {
-            // Only next keyframe exists - set to that
-            applyKeyframe(nextKeyframe);
-        } else {
-            // Interpolate between the two keyframes
-            const t = (time - prevKeyframe.time) / (nextKeyframe.time - prevKeyframe.time);
-            interpolateKeyframes(prevKeyframe, nextKeyframe, t);
-        }
-    }
-
-    function applyKeyframe(keyframe) {
-        keyframe.objects.forEach(objData => {
-            const obj = objectMap.get(objData.uuid);
-            if (obj) {
-                obj.position.copy(objData.position);
-                obj.rotation.copy(objData.rotation);
-                obj.scale.copy(objData.scale);
-                
-                if (obj.userData.body) {
-                    obj.userData.body.position.copy(objData.position);
-                    obj.userData.body.quaternion.copy(
-                        new THREE.Quaternion().setFromEuler(objData.rotation)
-                    );
-                }
-            }
-        });
-    }
-
-    function interpolateKeyframes(prevKeyframe, nextKeyframe, t) {
-        const interpolatedObjects = {};
-        
-        // Create a map of objects from the next keyframe
-        nextKeyframe.objects.forEach(objData => {
-            interpolatedObjects[objData.uuid] = objData;
-        });
-        
-        // Interpolate with previous keyframe
-        prevKeyframe.objects.forEach(objData => {
-            const nextObjData = interpolatedObjects[objData.uuid];
-            if (nextObjData) {
-                const obj = objectMap.get(objData.uuid);
-                if (obj) {
-                    obj.position.lerpVectors(objData.position, nextObjData.position, t);
-                    obj.rotation.copy(
-                        new THREE.Euler().setFromQuaternion(
-                            new THREE.Quaternion().slerp(
-                                new THREE.Quaternion().setFromEuler(objData.rotation),
-                                new THREE.Quaternion().setFromEuler(nextObjData.rotation),
-                                t
-                            )
-                        )
-                    );
-                    obj.scale.lerpVectors(objData.scale, nextObjData.scale, t);
-                    
-                    if (obj.userData.body) {
-                        obj.userData.body.position.copy(obj.position);
-                        obj.userData.body.quaternion.copy(
-                            new THREE.Quaternion().setFromEuler(obj.rotation)
-                        );
-                    }
-                }
-            }
-        });
-    }
-
-    // ====================
-    // FILE HANDLING
-    // ====================
-    function handleFileDrop(files) {
-        if (files.length === 0) return;
-        
-        const file = files[0];
-        if (!file.name.match(/\.(gltf|glb)$/i)) {
-            showError('Only GLTF/GLB files are supported');
-            return;
-        }
-        
-        const loader = new THREE.GLTFLoader();
-        const reader = new FileReader();
-        
-        reader.onload = function(event) {
-            loader.parse(event.target.result, '', (gltf) => {
-                gltf.scene.traverse(child => {
-                    if (child.isMesh) {
-                        child.castShadow = DoppleitConfig.shadows;
-                        child.receiveShadow = DoppleitConfig.shadows;
-                        
-                        if (physicsEnabled) {
-                            addPhysicsBody(child, 'box'); // Default to box physics for imported models
-                        }
-                    }
-                });
-                
-                scene.add(gltf.scene);
-                addToOutliner(gltf.scene);
-                selectObject(gltf.scene);
-                saveState();
-                
-                DoppleitAPI.trigger('file.imported', gltf);
-            }, (error) => {
-                showError(`Error loading model: ${error.message}`);
-            });
-        };
-        
-        reader.readAsArrayBuffer(file);
-    }
-
-    // ====================
-    // UNDO/REDO SYSTEM
-    // ====================
-    function saveState() {
-        if (isUndoingRedoing) return;
-        
-        const state = {
-            objects: scene.children.map(obj => {
-                if (obj.isMesh) {
-                    return {
-                        uuid: obj.uuid,
-                        position: obj.position.clone(),
-                        rotation: obj.rotation.clone(),
-                        scale: obj.scale.clone(),
-                        material: obj.material.clone(),
-                        visible: obj.visible,
-                        castShadow: obj.castShadow,
-                        receiveShadow: obj.receiveShadow
-                    };
-                }
-                return null;
-            }).filter(obj => obj !== null),
-            keyframes: JSON.parse(JSON.stringify(keyframes)) // Deep clone
-        };
-        
-        undoStack.push(state);
-        redoStack = []; // Clear redo stack when new action is performed
-    }
-
-    function undo() {
-        if (undoStack.length === 0) return;
-        
-        isUndoingRedoing = true;
-        const state = undoStack.pop();
-        redoStack.push(getCurrentState());
-        applyState(state);
-        isUndoingRedoing = false;
-    }
-
-    function redo() {
-        if (redoStack.length === 0) return;
-        
-        isUndoingRedoing = true;
-        const state = redoStack.pop();
-        undoStack.push(getCurrentState());
-        applyState(state);
-        isUndoingRedoing = false;
-    }
-
-    function getCurrentState() {
-        return {
-            objects: scene.children.map(obj => {
-                if (obj.isMesh) {
-                    return {
-                        uuid: obj.uuid,
-                        position: obj.position.clone(),
-                        rotation: obj.rotation.clone(),
-                        scale: obj.scale.clone(),
-                        material: obj.material.clone(),
-                        visible: obj.visible,
-                        castShadow: obj.castShadow,
-                        receiveShadow: obj.receiveShadow
-                    };
-                }
-                return null;
-            }).filter(obj => obj !== null),
-            keyframes: JSON.parse(JSON.stringify(keyframes))
-        };
-    }
-
-    function applyState(state) {
-        // Clear current scene
-        scene.children.forEach(child => {
-            if (child.isMesh) {
-                if (child.userData.body) {
-                    world.removeBody(child.userData.body);
-                }
-                scene.remove(child);
-            }
-        });
-        
-        // Rebuild scene from state
-        state.objects.forEach(objState => {
-            let geometry;
-            
-            // This is simplified - in a real app you'd want to properly reconstruct the geometry
-            if (objState.material.name.includes('BoxGeometry')) {
-                geometry = new THREE.BoxGeometry(1, 1, 1);
-            } else if (objState.material.name.includes('SphereGeometry')) {
-                geometry = new THREE.SphereGeometry(0.5);
-            } else {
-                geometry = new THREE.BoxGeometry(1, 1, 1);
-            }
-            
-            const material = new THREE.MeshStandardMaterial({
-                color: objState.material.color,
-                roughness: objState.material.roughness,
-                metalness: objState.material.metalness
-            });
-            
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.copy(objState.position);
-            mesh.rotation.copy(objState.rotation);
-            mesh.scale.copy(objState.scale);
-            mesh.visible = objState.visible;
-            mesh.castShadow = objState.castShadow;
-            mesh.receiveShadow = objState.receiveShadow;
-            
-            if (physicsEnabled) {
-                addPhysicsBody(mesh, 'box'); // Simplified - would need to store physics type in state
-            }
-            
-            scene.add(mesh);
-            objectMap.set(mesh.uuid, mesh);
-        });
-        
-        // Restore keyframes
-        keyframes = JSON.parse(JSON.stringify(state.keyframes));
-        updateKeyframeList();
-        
-        // Rebuild outliner
-        outlinerList.innerHTML = '';
-        scene.children.forEach(child => {
-            if (child.isMesh) {
-                addToOutliner(child);
-            }
-        });
-        
-        deselectAll();
-    }
-
-    // ====================
-    // UTILITY FUNCTIONS
-    // ====================
-    function showError(message) {
-        const errorElement = document.getElementById('error-message');
-        errorElement.textContent = message;
-        errorElement.classList.add('show');
-        
-        setTimeout(() => {
-            errorElement.classList.remove('show');
-        }, 5000);
-    }
-
-    // Initialize the application
-    init();
-</script>
+    </script>
 </body>
 </html>
